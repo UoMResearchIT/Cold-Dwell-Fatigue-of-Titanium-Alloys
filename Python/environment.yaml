@@ -1,0 +1,17 @@
+name: microtexture-pkg
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - numpy
+  - tk
+  - pillow
+  - python=3.8
+  - matplotlib
+  - pandas
+  - scikit-image
+  - h5py
+  - pyinstaller
+  - py2exe
+  - openpyxl
+

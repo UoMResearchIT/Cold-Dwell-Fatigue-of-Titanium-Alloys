@@ -1,0 +1,10 @@
+__pycache__/
+
+
+DREAM3D-6.5.49-Win64/
+*.exe
+*.pptx
+*.xlsx
+*.bat
+
+Sample_ANG_Files/

@@ -2,6 +2,7 @@ from tkinter import Text, TOP, BOTH, X, LEFT, RIGHT, StringVar, END, NW, WORD
 from tkinter.ttk import Frame, Label, Entry, Button, Style, Progressbar, Radiobutton
 from functools import partial
 from tkinter import filedialog, messagebox, IntVar
+from types import SimpleNamespace
 import os
 import json
 import glob
@@ -17,6 +18,11 @@ from skimage.segmentation import mark_boundaries
 from pandas import DataFrame, concat, ExcelWriter
 import warnings
 from imageio import imsave
+
+_FONTS = SimpleNamespace(
+    label=("DejaVu Sans", 14, "bold"),
+    small=("DejaVu Sans", 14),
+)
 
 
 # Good habit to put your GUI in a class to make it self-contained
@@ -56,7 +62,7 @@ class Dream3dMicrotextureAnalysis(Frame):
             width=self.lw,
             anchor='e',
             justify=RIGHT,
-            font=('Arial', '9', 'bold'),
+            font=_FONTS.label,
             background='#f2f2f2',
         )
         lbl2.pack(side=LEFT, padx=5, pady=10)
@@ -73,7 +79,7 @@ class Dream3dMicrotextureAnalysis(Frame):
             width=self.lw,
             anchor='e',
             justify=RIGHT,
-            font=('Arial', '9', 'bold'),
+            font=_FONTS.label,
             background='#f2f2f2',
         )
         lbl4.pack(side=LEFT, padx=5, pady=10)
@@ -336,7 +342,7 @@ class GenericPipelineBuilderUI(Frame):
             width=self.lw,
             anchor='e',
             justify=RIGHT,
-            font=('Arial', '9', 'bold'),
+            font=_FONTS.label,
             background='#f2f2f2',
         )
         lbl1.pack(side=LEFT, padx=5, pady=10)
@@ -353,7 +359,7 @@ class GenericPipelineBuilderUI(Frame):
             width=self.lw,
             anchor='e',
             justify=RIGHT,
-            font=('Arial', '9', 'bold'),
+            font=_FONTS.label,
             background='#f2f2f2',
         )
         lbl2.pack(side=LEFT, padx=5, pady=10)
@@ -376,7 +382,7 @@ class GenericPipelineBuilderUI(Frame):
             width=self.lw,
             anchor='e',
             justify=RIGHT,
-            font=('Arial', '9', 'bold'),
+            font=_FONTS.label,
             background='#f2f2f2',
         )
         lbl3_mask1_main.pack(side=LEFT, padx=5, pady=5)
@@ -387,7 +393,7 @@ class GenericPipelineBuilderUI(Frame):
 
         self.mask1_text = StringVar()
         self.mask1_text.set("CI > ")
-        lbl3_mask1 = Label(frame3b, textvariable=self.mask1_text, width=self.lw, anchor='e', font=('Arial', '9'), justify=RIGHT)
+        lbl3_mask1 = Label(frame3b, textvariable=self.mask1_text, width=self.lw, anchor='e', font=_FONTS.small, justify=RIGHT)
         lbl3_mask1.pack(side=LEFT, padx=5, pady=0)
         self.mask1_value = Entry(frame3b)
         self.mask1_value.pack(fill=X, padx=10, expand=True)
@@ -399,7 +405,7 @@ class GenericPipelineBuilderUI(Frame):
 
         self.mask2_text = StringVar()
         self.mask2_text.set("IQ > ")
-        lbl3_mask2 = Label(frame3c, textvariable=self.mask2_text, width=self.lw, anchor='e', justify=RIGHT, font=('Arial', '9'))
+        lbl3_mask2 = Label(frame3c, textvariable=self.mask2_text, width=self.lw, anchor='e', justify=RIGHT, font=_FONTS.small)
         lbl3_mask2.pack(side=LEFT, padx=5, pady=0)
         self.mask2_value = Entry(frame3c)
         self.mask2_value.pack(fill=X, padx=10, expand=True)
@@ -416,7 +422,7 @@ class GenericPipelineBuilderUI(Frame):
             textvariable=self.cleanup1_text,
             width=self.lw,
             anchor='e',
-            font=('Arial', '9', 'bold'),
+            font=_FONTS.label,
             justify=RIGHT,
             background='#f2f2f2',
         )
@@ -428,7 +434,7 @@ class GenericPipelineBuilderUI(Frame):
         self.primary_cleanup_text = StringVar()
         self.primary_cleanup_text.set("CI < ")
         lbl_primary_cleanup_value = Label(
-            frame4a, textvariable=self.primary_cleanup_text, width=self.lw, anchor='e', justify=RIGHT, font=('Arial', '9')
+            frame4a, textvariable=self.primary_cleanup_text, width=self.lw, anchor='e', justify=RIGHT, font=_FONTS.small
         )
         lbl_primary_cleanup_value.pack(side=LEFT, padx=5, pady=0)
         self.primary_cleanup_value = Entry(frame4a)
@@ -446,7 +452,7 @@ class GenericPipelineBuilderUI(Frame):
             textvariable=self.secondary_cleanup_header_text,
             width=self.lw,
             anchor='e',
-            font=('Arial', '9', 'bold'),
+            font=_FONTS.label,
             justify=RIGHT,
             background='#f2f2f2',
         )
@@ -459,7 +465,7 @@ class GenericPipelineBuilderUI(Frame):
         self.secondary_cleanup_text = StringVar()
         self.secondary_cleanup_text.set("CI < ")
         lbl_secondary_cleanup_value = Label(
-            frame4c, textvariable=self.secondary_cleanup_text, width=self.lw, anchor='e', font=('Arial', '9')
+            frame4c, textvariable=self.secondary_cleanup_text, width=self.lw, anchor='e', font=_FONTS.small
         )
         lbl_secondary_cleanup_value.pack(side=LEFT, padx=5, pady=0)
         self.secondary_cleanup_value = Entry(frame4c)
@@ -475,7 +481,7 @@ class GenericPipelineBuilderUI(Frame):
             width=self.lw,
             anchor='e',
             justify=RIGHT,
-            font=('Arial', '9', 'bold'),
+            font=_FONTS.label,
             background='#f2f2f2',
         )
         lbl_mtr_size.pack(side=LEFT, padx=5, pady=10)
@@ -492,7 +498,7 @@ class GenericPipelineBuilderUI(Frame):
             width=self.lw,
             anchor='e',
             justify=RIGHT,
-            font=('Arial', '9', 'bold'),
+            font=_FONTS.label,
             background='#f2f2f2',
         )
         lbl_version.pack(side=LEFT, padx=5, pady=10)
@@ -516,7 +522,7 @@ class GenericPipelineBuilderUI(Frame):
             width=self.lw,
             anchor='e',
             justify=RIGHT,
-            font=('Arial', '9', 'bold'),
+            font=_FONTS.label,
             background='#f2f2f2',
         )
         lbl7.pack(side=LEFT, padx=5, pady=10)

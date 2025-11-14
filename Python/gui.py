@@ -14,7 +14,7 @@ def main():
     s = Style()
     s.configure("TFrame", background="white")
     s.configure("TLabel", background="white")
-    s.configure("TButton", background="black", foreground="black")
+    # s.configure("TButton", background="black", foreground="black")
 
     tab1 = PipelineBuilderUI_PW9()
     tab2 = Dream3dMicrotextureAnalysis()

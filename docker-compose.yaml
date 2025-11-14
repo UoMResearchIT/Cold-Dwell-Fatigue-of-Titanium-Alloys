@@ -1,0 +1,24 @@
+# This is a development tool, not used by the Galaxy server
+# Runs the FIJI/ImageJ GUI in the container (Linux / WSL)
+# Will mount ${TEST_DATA} to /data, and the current directory to /tools
+
+services:
+  dream3d:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dream3d:6.5.171
+    environment:
+      - DISPLAY=$DISPLAY
+      # - QT_DEBUG_PLUGINS=1
+      - LD_LIBRARY_PATH=/opt/dream3d/lib:${LD_LIBRARY_PATH}
+      - QT_PLUGIN_PATH=/opt/dream3d/Plugins
+      - QT_QPA_PLATFORM_PLUGIN_PATH=/opt/dream3d/Plugins/platforms
+      - XDG_RUNTIME_DIR=/tmp/runtime-root
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - .:/tools
+    #   - ${TEST_DATA}:/data:rw
+    # post_start:
+    working_dir: /tools
+    entrypoint: ["/opt/dream3d/bin/DREAM3D"]

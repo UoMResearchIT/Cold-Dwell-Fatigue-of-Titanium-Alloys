@@ -10,7 +10,7 @@ import time
 import re
 import numpy as np
 import subprocess
-import win32com.client
+import psutil
 from utils import setup_directories, create_d3d_input_files_v65_ang, create_d3d_input_files_v65_ctf
 from utils import read_dream3d_file, add_scalebar, array2rgb
 from skimage.segmentation import mark_boundaries
@@ -772,13 +772,15 @@ class GenericPipelineBuilderUI(Frame):
             type='ok',
         )
 
-    def getLiveInstances(self, idname='PipelineRunner.exe'):
-        running_instances = []
-        wmi = win32com.client.GetObject('winmgmts:')
-        for p in wmi.InstancesOf('win32_process'):
-            if idname in p.name:
-                running_instances.append(p.name)
-        return len(running_instances)
+    def getLiveInstances(self, idname='PipelineRunner'):
+        count = 0
+        for proc in psutil.process_iter(['pid', 'name']):
+            try:
+                if idname.lower() in proc.info['name'].lower():
+                    count += 1
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                pass
+        return count
 
     def checkStatus(self, verbose=False):
         number_pipeline_runners_open = self.getLiveInstances()
@@ -804,7 +806,7 @@ class GenericPipelineBuilderUI(Frame):
             print(
                 f"\
                 Dream3D: {self.dream3d_version}\n\
-                Number of Open PipelineRunner.exe: {number_pipeline_runners_open}\n\
+                Number of PipelineRunner instances: {number_pipeline_runners_open}\n\
                 Number of Written or Existing Dream3D Files: {sum(written_files)}\n\
                 Job Complete: {job_completion_status}\n\
                 Dream3D Errors causing premature exiting of program?: {errors}\n\
@@ -900,7 +902,7 @@ class PipelineBuilderUI_PW9(GenericPipelineBuilderUI):
                 process = subprocess.Popen(command, shell=True)
                 self.outputs.append(process)
 
-        # After 5 seconds, check to see if either PipelineRunner.exe is still running or output files have been written
+        # After 5 seconds, check to see if either PipelineRunner is still running or output files have been written
         if self.int_overwrite.get() == 1 or len(self.outputs):
             time.sleep(5)
             t1 = time.time()

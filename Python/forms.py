@@ -1,5 +1,5 @@
-from tkinter import Tk, Text, TOP, BOTH, X, Y, N, LEFT, RIGHT, W, CENTER, BOTTOM, StringVar, END, NW, WORD
-from tkinter.ttk import Frame, Label, Entry, Button, Style, Progressbar, Radiobutton, Scrollbar
+from tkinter import Text, TOP, BOTH, X, LEFT, RIGHT, StringVar, END, NW, WORD
+from tkinter.ttk import Frame, Label, Entry, Button, Style, Progressbar, Radiobutton
 from functools import partial
 from tkinter import filedialog, messagebox, IntVar
 import os
@@ -12,7 +12,7 @@ import numpy as np
 import subprocess
 import win32com.client
 from utils import setup_directories, create_d3d_input_files_v65_ang, create_d3d_input_files_v65_ctf
-from utils import read_dream3d_file, add_scalebar, create_cpm_cmap, array2rgb
+from utils import read_dream3d_file, add_scalebar, array2rgb
 from skimage.segmentation import mark_boundaries
 from pandas import DataFrame, concat, ExcelWriter
 import warnings

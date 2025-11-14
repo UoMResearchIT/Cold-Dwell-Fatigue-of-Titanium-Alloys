@@ -1,6 +1,5 @@
 import numpy as np
 from pandas import DataFrame, cut
-import re
 import glob
 import h5py
 import json
@@ -12,7 +11,6 @@ from PIL.ImageFont import truetype
 from PIL.ImageDraw import Draw
 from matplotlib.pyplot import get_cmap
 from matplotlib.colors import to_rgb
-from deprecated import deprecated
 
 
 def array2rgb(arr, cmap='jet', vmin=0, vmax=1, nan_color='k'):
@@ -208,7 +206,7 @@ def add_scalebar(d3d=None, length_pct=0.25, plot=False, rgb_image=None, stepsize
 
     # Crop off bottom to remove scalebar
     fonts = ["Arial"]  # "Calibri","Cambria","Tahoma","Verdana","Corbel","Georgia","Ebrima"]
-    colors = ["black"]
+    # colors = ["black"]
     units = ['mm']
 
     if isinstance(d3d, dict):
@@ -223,7 +221,7 @@ def add_scalebar(d3d=None, length_pct=0.25, plot=False, rgb_image=None, stepsize
     # assign font, size, color
     fontsize = np.floor(0.03 * h).astype('int32')
     font = truetype(np.random.choice(fonts).lower(), size=fontsize)
-    fill = np.random.choice(colors)
+    # fill = np.random.choice(colors)
 
     # assign length
     length = int(w * length_pct)
@@ -233,7 +231,7 @@ def add_scalebar(d3d=None, length_pct=0.25, plot=False, rgb_image=None, stepsize
     thickness = int(0.025 * h)
 
     # assign text on top or bottom of scale bar
-    top = True
+    # top = True
 
     # random location 15% of the time other bottom right quadrant. if text is going on bottom, increase bottom buffer size
     right_buffer = int(0.05 * w)  # 50
@@ -241,8 +239,8 @@ def add_scalebar(d3d=None, length_pct=0.25, plot=False, rgb_image=None, stepsize
 
     # get rectangle parameters
     rect_width = int(0.025 * h)
-    outline_color = fill
-    rect_fill = (255, 255, 255, 255)
+    # outline_color = fill
+    # rect_fill = (255, 255, 255, 255)
 
     # Determine offset from scalebar
     offset = -1.05 * bottom_buffer  # -55
@@ -254,17 +252,17 @@ def add_scalebar(d3d=None, length_pct=0.25, plot=False, rgb_image=None, stepsize
     xy = ((xs, ys), (xf, ys))
     xy_bg = ((xs * 0.99, ys * 0.94), (xf * 1.01, ys * 1.03))
 
-    xyrect = ((xs, ys + offset), (xf, ys + offset + rect_width))
+    # xyrect = ((xs, ys + offset), (xf, ys + offset + rect_width))
 
     # Locate Center of Line
-    x_center = int(xs + 0.5 * length)
+    # x_center = int(xs + 0.5 * length)
 
     text_str = '%.3f %s' % (length * stepsize / 1000, units[0])
 
     # Draw Text and Scalebar
     draw = Draw(rgb_image)
     text_length = draw.textlength(text=text_str, font=font)
-    larger_feature_length = max([text_length, length])
+    # larger_feature_length = max([text_length, length])
     x_text_center = int(xs + 0.5 * text_length)
     line_center = int(xs + 0.5 * length)
     x_text_offset = line_center - x_text_center

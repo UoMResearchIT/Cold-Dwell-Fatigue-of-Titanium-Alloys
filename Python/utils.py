@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 from pandas import DataFrame, cut
 import glob
@@ -209,7 +210,10 @@ def add_scalebar(d3d=None, length_pct=0.25, plot=False, rgb_image=None, stepsize
     """
 
     # Crop off bottom to remove scalebar
-    fonts = ["Arial"]  # "Calibri","Cambria","Tahoma","Verdana","Corbel","Georgia","Ebrima"]
+    if sys.platform == 'linux':
+        font_name = "DejaVuSans"
+    else:
+        font_name = "arial"
     # colors = ["black"]
     units = ['mm']
 
@@ -224,7 +228,7 @@ def add_scalebar(d3d=None, length_pct=0.25, plot=False, rgb_image=None, stepsize
 
     # assign font, size, color
     fontsize = np.floor(0.03 * h).astype('int32')
-    font = truetype(np.random.choice(fonts).lower(), size=fontsize)
+    font = truetype(font_name, size=fontsize)
     # fill = np.random.choice(colors)
 
     # assign length

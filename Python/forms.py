@@ -153,7 +153,7 @@ class Dream3dMicrotextureAnalysis(Frame):
         # Write Input Files
         if len(self.file_paths):
 
-            str_stress_axis_direction = ''.join(list(map(str, re.findall('\d', self.stress_axis_direction))))  # string format
+            str_stress_axis_direction = ''.join(list(map(str, re.findall(r'\d', self.stress_axis_direction))))  # string format
             int_stress_axis_direction = list(map(int, str_stress_axis_direction))  # self. format
 
             min_mtr_size = self.min_mtr_size
@@ -632,7 +632,7 @@ class GenericPipelineBuilderUI(Frame):
             file_path_exists = False
 
             if fid.find(' ') > 0:
-                response = messagebox.showwarning(
+                messagebox.showwarning(
                     title='Warning',
                     message="Spaces were detected in the input file paths. Please ensure that all spaces are removed prior to running Dream3d.",
                     type='ok',
@@ -656,14 +656,14 @@ class GenericPipelineBuilderUI(Frame):
                 self.generateDream3dInputs()
 
             elif self.load_method == 'directory':
-                response = messagebox.showwarning(
+                messagebox.showwarning(
                     title='Warning',
                     message="To re-generate input files, please select ANG or CTF files using the top left button. Then hit 'Generate Input File(s)'.",
                     type='ok',
                 )
 
         else:
-            response = messagebox.showwarning(title='Warning', message="No input file(s) selected.", type='ok')
+            messagebox.showwarning(title='Warning', message="No input file(s) selected.", type='ok')
             pass
 
     def onLoadDirectory(self):
@@ -762,7 +762,7 @@ class GenericPipelineBuilderUI(Frame):
         else:
             messagebox_type = messagebox.showwarning
 
-        response = messagebox_type(
+        messagebox_type(
             title='Input File Status',
             message=f"{len(self.inputs['paths'].keys())} / {len(self.all_file_paths)} input files were successfully written, given the current overwrite settings.",
             type='ok',
@@ -861,7 +861,7 @@ class PipelineBuilderUI_PW9(GenericPipelineBuilderUI):
             else:
                 response = messagebox.showinfo(
                     title='Dream3D Status',
-                    message=f"Given the current settings, the program has not submitted the requested Dream3D jobs as this process would overwrite existing files.",
+                    message="Given the current settings, the program has not submitted the requested Dream3D jobs as this process would overwrite existing files.",
                     type='ok',
                 )
 

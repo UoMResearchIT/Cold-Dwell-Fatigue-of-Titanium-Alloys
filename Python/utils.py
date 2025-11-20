@@ -62,8 +62,11 @@ def read_dream3d_file(d3d, ref_dir=[0, 0, 1], mtr_size=10000):
     d['phases'] = data['DataContainers/ImageDataContainer/CellFeatureData/Phases'][1:]
     d['num_neighbors'] = data['DataContainers/ImageDataContainer/CellFeatureData/NumNeighbors2'][1:]
     d['sizes'] = data['DataContainers/ImageDataContainer/CellFeatureData/EquivalentDiameters'][1:]
-    d['neighbor_list'] = data['DataContainers/ImageDataContainer/CellFeatureData/NeighborList2'][:].tolist()
-    d['shared_surfaces'] = data['DataContainers/ImageDataContainer/CellFeatureData/SharedSurfaceAreaList2'][:].tolist()
+    try:
+        d['neighbor_list'] = data['DataContainers/ImageDataContainer/CellFeatureData/NeighborList2'][:].tolist()
+        d['shared_surfaces'] = data['DataContainers/ImageDataContainer/CellFeatureData/SharedSurfaceAreaList2'][:].tolist()
+    except:
+        pass
     d['avg_caxis'] = data['DataContainers/ImageDataContainer/CellFeatureData/AvgCAxes'][1:]
     d['mask'] = data['DataContainers/ImageDataContainer/CellData/Mask'][0, :, :, 0]
 

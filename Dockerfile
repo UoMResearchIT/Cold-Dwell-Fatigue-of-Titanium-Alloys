@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
     libx11-xcb-dev \
     libxcb-util-dev \
     libxkbcommon-x11-dev \
+    python3-tk \
     && rm -rf /var/lib/apt/lists/*
 
 ENV LD_LIBRARY_PATH=/opt/dream3d/lib:${LD_LIBRARY_PATH}
@@ -28,3 +29,17 @@ ENV QT_PLUGIN_PATH=/opt/dream3d/Plugins
 ENV QT_QPA_PLATFORM_PLUGIN_PATH=/opt/dream3d/Plugins/platforms
 ENV XDG_RUNTIME_DIR=/tmp/runtime-root
 
+ENV PATH="/opt/dream3d/bin:${PATH}"
+RUN useradd -m dream3d
+
+# Install python dependencies with UV
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+ENV HOME=/tmp
+ENV UV_CACHE=/tmp/uv_cache
+
+USER dream3d
+
+WORKDIR /home/dream3d/
+COPY pyproject.toml ./
+RUN uv sync
+ENV PATH="/home/dream3d/.venv/bin:${PATH}"

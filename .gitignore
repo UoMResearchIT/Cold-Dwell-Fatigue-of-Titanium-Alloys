@@ -8,3 +8,8 @@ DREAM3D-6.5.49-Win64/
 *.bat
 
 Sample_ANG_Files/
+
+.env
+uv.lock
+.flake8
+.vscode/

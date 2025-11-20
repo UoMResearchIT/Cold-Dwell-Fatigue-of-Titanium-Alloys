@@ -6,7 +6,6 @@ from types import SimpleNamespace
 import os
 import json
 import glob
-import yaml
 import time
 import re
 import numpy as np
@@ -18,6 +17,8 @@ from skimage.segmentation import mark_boundaries
 from pandas import DataFrame, concat, ExcelWriter
 import warnings
 from imageio import imsave
+
+from config import Config
 
 _FONTS = SimpleNamespace(
     label=("DejaVu Sans", 14, "bold"),
@@ -503,15 +504,7 @@ class GenericPipelineBuilderUI(Frame):
         )
         lbl_version.pack(side=LEFT, padx=5, pady=10)
 
-        self.int_dream3d_version = IntVar()
-        self.rbtn2 = Radiobutton(
-            frame6,
-            text="DREAM3D-6.5.49-Win64",
-            variable=self.int_dream3d_version,
-            value=0,
-            command=partial(self.getDream3DVersionAndFileExtension, True),
-        )
-        self.rbtn2.pack(fill=X, padx=10, expand=True)
+        self.dream3d_version = Config().dream3d_version
         # ========================================================================================================================
 
         frame7 = Frame(self)
@@ -754,17 +747,14 @@ class GenericPipelineBuilderUI(Frame):
 
     def generateDream3dInputs(self):
         # Generate Input Files
-        # if self.dream3d_version == 'version6.13': # Dream3D Version 6.13
-        #     if 'ang' in self.inputs['extension'].lower():
-        #         create_d3d_input_files_v613_ang(self.inputs)
-        #     elif 'ctf' in self.inputs['extension'].lower():
-        #         create_d3d_input_files_v613_ctf(self.inputs)
 
-        if self.dream3d_version == 'version6.5':  # Dream3D Version 6.5
+        if self.dream3d_version.startswith('6.5'):
             if 'ang' in self.inputs['extension'].lower():
                 create_d3d_input_files_v65_ang(self.inputs)
             elif 'ctf' in self.inputs['extension'].lower():
                 create_d3d_input_files_v65_ctf(self.inputs)
+        else:
+            raise NotImplementedError("Only Dream3D Version 6.5 is currently supported for input file generation.")
 
         # Provide feedback to user
         if len(self.inputs['paths'].keys()):
@@ -823,11 +813,6 @@ class GenericPipelineBuilderUI(Frame):
 
     def getDream3DVersionAndFileExtension(self, use_gui_inputs=True):
         if use_gui_inputs:
-            if self.int_dream3d_version.get() == 1:
-                self.dream3d_version = 'version6.13'
-            elif self.int_dream3d_version.get() == 0:
-                self.dream3d_version = 'version6.5'
-
             try:
                 self.extension = self.file_paths[0].split('.')[-1]
             except:
@@ -840,26 +825,18 @@ class GenericPipelineBuilderUI(Frame):
                     inputfile = json.load(f)
 
                 first_key = sorted(list(inputfile.keys()))[0]  # Some are '00' and others are '0'
-                self.dream3d_version = 'version' + str(inputfile['PipelineBuilder']['Version'])
-
-                # If correct dream3d version is not displayed, update radio buttons
-                if self.dream3d_version == 'version6.13':
-                    self.rbtn1.invoke()
-                elif self.dream3d_version == 'version6.5':
-                    self.rbtn2.invoke()
-
+                self.dream3d_version = str(inputfile['PipelineBuilder']['Version'])
                 self.extension = inputfile[first_key]['InputFile'].split('.')[-1]
 
                 # self.update_idletasks()
 
     def loadPipelineRunnerPath(self):
-        with open('../Templates/dream3d_config.yaml', 'r') as f:
-            config = yaml.safe_load(f)
 
-        self.timeout_time = config['error_handling']['timeout_seconds']
-        pipeline_runner_path = config['dream3d_pipeline_runner_location'][self.dream3d_version]
+        config = Config()
+        self.timeout_time = config.error_handling.timeout_seconds
+        pipeline_runner_path = config.dream3d_pipeline_runner_location
 
-        return r"start " + pipeline_runner_path
+        return pipeline_runner_path
 
 
 class PipelineBuilderUI_PW9(GenericPipelineBuilderUI):

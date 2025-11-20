@@ -4,13 +4,14 @@ import glob
 import h5py
 import json
 import os
-import yaml
 from skimage.measure import regionprops
 from PIL.Image import fromarray
 from PIL.ImageFont import truetype
 from PIL.ImageDraw import Draw
 from matplotlib.pyplot import get_cmap
 from matplotlib.colors import to_rgb
+
+from config import Config
 
 
 def array2rgb(arr, cmap='jet', vmin=0, vmax=1, nan_color='k'):
@@ -295,9 +296,7 @@ def create_d3d_input_files_v65_ang(input_dictionary):
     inputs_dictionary = dict(output_folder_name = string, caxis_misalignment = string), comparison_value = string, hkl_ipf_dir = [], file_paths = [])
     """
     # template_path = '../Templates/PW_standard_routine_v65.json'
-    with open('../Templates/dream3d_config.yaml', 'r') as f:
-        config = yaml.safe_load(f)
-    template_path = config['dream3d_pipeline_template_location']['ang']['version6.5']
+    template_path = Config().dream3d_pipeline_template_location.ang
 
     with open(template_path, 'r') as f:
         template = json.load(f)
@@ -331,10 +330,7 @@ def create_d3d_input_files_v65_ctf(input_dictionary):
     """
     inputs_dictionary = dict(output_folder_name = string, caxis_misalignment = string), comparison_value = string, hkl_ipf_dir = [], file_paths = [])
     """
-    # template_path = '../Templates/PW_CTF_routine_v6.13.json'
-    with open('../Templates/dream3d_config.yaml', 'r') as f:
-        config = yaml.safe_load(f)
-    template_path = config['dream3d_pipeline_template_location']['ctf']['version6.5']
+    template_path = Config().dream3d_pipeline_template_location.ctf
 
     with open(template_path, 'r') as f:
         template = json.load(f)
@@ -365,7 +361,7 @@ def create_d3d_input_files_v65_ctf(input_dictionary):
 
 
 def runner(list_of_input_files):
-    d3d_path = r"start D:\DREAM3D-6.1.3-Win64\PipelineRunner.exe"
+    d3d_path = Config().dream3d_pipeline_runner_location
     if not list_of_input_files:
         fids = glob.glob(os.path.join('./', "*", "*.json"))
     for fid in fids:

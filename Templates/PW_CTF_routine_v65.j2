@@ -1,3 +1,6 @@
+{% macro output_path() -%}
+    {{output_dir}}/{{varargs|join('')}}
+{%- endmacro %}
 {
     "00": {
         "CellAttributeMatrixName": "CellData",
@@ -223,7 +226,7 @@
                 "Attribute Array Name": "Error",
                 "Attribute Matrix Name": "CellData",
                 "Comparison Operator": 0,
-                "Comparison Value": "{{ mask1_value }}",
+                "Comparison Value": {{ error_mask_threshold }},
                 "Data Container Name": "ImageDataContainer"
             }
         ]
@@ -266,7 +269,7 @@
             "Data Container Name": "ImageDataContainer"
         },
         "NumColors": 32,
-        "OutputPath": "{{ initial_pole_figure }}",
+        "OutputPath": "{{ output_path('PoleFigures') }}",
         "Title": "Thresholded Pole Figure",
         "UseGoodVoxels": 1
     },
@@ -339,7 +342,7 @@
         "Filter_Name": "ReplaceElementAttributesWithNeighborValues",
         "Filter_Uuid": "{17410178-4e5f-58b9-900e-8194c69200ab}",
         "Loop": 0,
-        "MinConfidence": "{{ primary_cleanup_value }}",
+        "MinConfidence": {{ bc_primary_threshold }},
         "SelectedComparison": 0
     },
     "16": {
@@ -364,7 +367,7 @@
         "Filter_Name": "NeighborOrientationCorrelation",
         "Filter_Uuid": "{6427cd5e-0ad2-5a24-8847-29f8e0720f4f}",
         "Level": 3,
-        "MinConfidence": "{{ secondary_cleanup_value }}",
+        "MinConfidence": {{ bc_secondary_threshold }},
         "MisorientationTolerance": 5,
         "QuatsArrayPath": {
             "Attribute Matrix Name": "CellData",
@@ -409,7 +412,7 @@
             "Data Array Name": "Mask",
             "Data Container Name": "ImageDataContainer"
         },
-        "MisorientationTolerance": "{{ caxis_misalignment }}",
+        "MisorientationTolerance": {{ caxis_misalignment }},
         "QuatsArrayPath": {
             "Attribute Matrix Name": "CellData",
             "Data Array Name": "Quats",
@@ -1022,7 +1025,7 @@
                 "Attribute Array Name": "volume_map",
                 "Attribute Matrix Name": "CellData",
                 "Comparison Operator": 1,
-                "Comparison Value": "{{ min_mtr_size }}",
+                "Comparison Value": {{ min_mtr_size }},
                 "Data Container Name": "ImageDataContainer"
             }
         ]
@@ -1167,7 +1170,7 @@
             "Data Container Name": "ImageDataContainer"
         },
         "NumColors": 32,
-        "OutputPath": "{{ final_pole_figure }}",
+        "OutputPath": "{{ output_path('PoleFigures') }}",
         "Title": "Cleaned Pole Figure",
         "UseGoodVoxels": 1
     },
@@ -1209,12 +1212,12 @@
             "Data Container Name": "ImageDataContainer"
         },
         "NumColors": 32,
-        "OutputPath": "{{ mtr_pole_figure }}",
+        "OutputPath": "{{ output_path('PoleFigures') }}",
         "Title": "MTR-Only Pole Figure",
         "UseGoodVoxels": 1
     },
     "48": {
-        "FileName": "{{ raw_ipf_z }}",
+        "FileName": "{{ output_path(basename, '_IPF_Raw_Z.tif') }}",
         "FilterVersion": "1.0.454",
         "Filter_Enabled": true,
         "Filter_Human_Label": "ITK::Image Writer",
@@ -1228,7 +1231,7 @@
         "Plane": 0
     },
     "49": {
-        "FileName": "{{ cleaned_ipf_z }}",
+        "FileName": "{{ output_path(basename, '_IPF_Cleaned_Z.tif') }}",
         "FilterVersion": "1.0.454",
         "Filter_Enabled": true,
         "Filter_Human_Label": "ITK::Image Writer",
@@ -1242,7 +1245,7 @@
         "Plane": 0
     },
     "50": {
-        "FileName": "{{ average_ipf_z }}",
+        "FileName": "{{ output_path(basename,'_IPF_Average_Z.tif') }}",
         "FilterVersion": "1.0.454",
         "Filter_Enabled": true,
         "Filter_Human_Label": "ITK::Image Writer",
@@ -1256,7 +1259,7 @@
         "Plane": 0
     },
     "51": {
-        "FileName": "{{ mtr_ipf_z }}",
+        "FileName": "{{ output_path(basename,'_IPF_MTR_Z.tif') }}",
         "FilterVersion": "1.0.454",
         "Filter_Enabled": true,
         "Filter_Human_Label": "ITK::Image Writer",
@@ -1275,7 +1278,7 @@
         "Filter_Human_Label": "Write DREAM.3D Data File",
         "Filter_Name": "DataContainerWriter",
         "Filter_Uuid": "{3fcd4c43-9d75-5b86-aad4-4441bc914f37}",
-        "OutputFile": "{{ dream3d_output }}",
+        "OutputFile": "{{ output_path(basename, '.dream3d') }}",
         "WriteTimeSeries": 0,
         "WriteXdmfFile": 1
     },

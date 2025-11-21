@@ -303,7 +303,7 @@ def create_d3d_input_files_v65_ang(input_dictionary):
     inputs_dictionary = dict(output_folder_name = string, caxis_misalignment = string), comparison_value = string, hkl_ipf_dir = [], file_paths = [])
     """
     # template_path = '../Templates/PW_standard_routine_v65.json'
-    template_path = Config().dream3d_pipeline_template_location.ang
+    template_path = Config().dream3d_pipeline_template('ang')
 
     with open(template_path, 'r') as f:
         template = json.load(f)
@@ -337,7 +337,7 @@ def create_d3d_input_files_v65_ctf(input_dictionary):
     """
     inputs_dictionary = dict(output_folder_name = string, caxis_misalignment = string), comparison_value = string, hkl_ipf_dir = [], file_paths = [])
     """
-    template_path = Config().dream3d_pipeline_template_location.ctf
+    template_path = Config().dream3d_pipeline_template('ctf')
 
     with open(template_path, 'r') as f:
         template = json.load(f)
@@ -368,7 +368,7 @@ def create_d3d_input_files_v65_ctf(input_dictionary):
 
 
 def runner(list_of_input_files):
-    d3d_path = Config().dream3d_pipeline_runner_location
+    d3d_path = Config().dream3d_pipeline_runner
     if not list_of_input_files:
         fids = glob.glob(os.path.join('./', "*", "*.json"))
     for fid in fids:

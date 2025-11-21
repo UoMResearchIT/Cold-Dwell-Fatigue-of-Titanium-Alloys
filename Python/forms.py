@@ -834,7 +834,7 @@ class GenericPipelineBuilderUI(Frame):
 
         config = Config()
         self.timeout_time = config.error_handling.timeout_seconds
-        pipeline_runner_path = config.dream3d_pipeline_runner_location
+        pipeline_runner_path = config.dream3d_pipeline_runner
 
         return pipeline_runner_path
 

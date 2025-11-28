@@ -1,3 +1,4 @@
+import os
 from importlib.metadata import version, PackageNotFoundError
 import tomllib
 
@@ -5,6 +6,7 @@ try:
     __version__ = version("microtexture")
 except PackageNotFoundError:
     try:
-        __version__ = tomllib.load(open("pyproject.toml", "rb"))["project"]["version"]
+        toml = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../pyproject.toml')
+        __version__ = tomllib.load(open(toml, "rb"))["project"]["version"]
     except:
-        pass
+        __version__ = "NA"

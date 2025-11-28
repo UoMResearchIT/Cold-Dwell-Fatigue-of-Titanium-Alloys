@@ -1,10 +1,10 @@
 import os
 from types import SimpleNamespace
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
 
 class Config:
-    def __init__(self, env_file=".env"):
+    def __init__(self, env_file=find_dotenv()):
         load_dotenv(env_file)
 
         self.dream3d_version = os.getenv("DREAM3D_VERSION")

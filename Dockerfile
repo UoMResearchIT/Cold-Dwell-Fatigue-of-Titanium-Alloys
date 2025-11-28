@@ -1,6 +1,13 @@
+# Packs a copy of the project with all its dependencies (including Dream3D)
+# Entrypoint is set to the CLI, use docker-compose.yaml for the GUI
+# Usage:
+#   docker buildx build . -t microtexture:latest
+#   docker run --rm microtexture:latest --help
+#   docker run --rm -v ./my/data:/data microtexture:latest -f FILE [...]
+
 FROM ubuntu:24.04
 
-# Install DREAM3D
+# Install DREAM3D ----
 RUN apt-get update && apt-get install -y \
     wget \
     tar \
@@ -24,22 +31,39 @@ RUN apt-get update && apt-get install -y \
     python3-tk \
     && rm -rf /var/lib/apt/lists/*
 
-ENV LD_LIBRARY_PATH=/opt/dream3d/lib:${LD_LIBRARY_PATH}
+ENV LD_LIBRARY_PATH=/opt/dream3d/lib
 ENV QT_PLUGIN_PATH=/opt/dream3d/Plugins
 ENV QT_QPA_PLATFORM_PLUGIN_PATH=/opt/dream3d/Plugins/platforms
 ENV XDG_RUNTIME_DIR=/tmp/runtime-root
 
 ENV PATH="/opt/dream3d/bin:${PATH}"
-RUN useradd -m dream3d
 
-# Install python dependencies with UV
+# "Install" this project ----
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 ENV HOME=/tmp
 ENV UV_CACHE=/tmp/uv_cache
 
-USER dream3d
+WORKDIR /opt/microtexture
+COPY . .
 
-WORKDIR /home/dream3d/
-COPY pyproject.toml ./
 RUN uv sync
-ENV PATH="/home/dream3d/.venv/bin:${PATH}"
+ENV PATH="/opt/microtexture/.venv/bin:${PATH}"
+RUN mkdir -p /tmp/.cache/matplotlib && chmod a+rw /tmp/.cache/matplotlib
+
+# add a 'microtexture' launcher
+RUN ln -sr Python/cli.py .venv/bin/microtexture && chmod a+rx .venv/bin/microtexture
+
+ENV DREAM3D_VERSION="6.5.171"
+ENV DREAM3D_PIPELINE_RUNNER="/opt/dream3d/bin/PipelineRunner"
+ENV DREAM3D_PIPELINE_TEMPLATE="/opt/microtexture/Templates/PW_{EXT}_routine_v65.j2"
+
+RUN useradd -m microtexture
+RUN mkdir /data
+RUN chown microtexture:microtexture /data
+VOLUME /data
+
+USER microtexture
+WORKDIR /data
+
+ENTRYPOINT ["microtexture"]
+CMD ["-h"]

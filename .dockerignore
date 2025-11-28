@@ -1,0 +1,14 @@
+__pycache__/
+
+DREAM3D-6.5.49-Win64/
+*.exe
+*.pptx
+*.xlsx
+*.bat
+
+.flake8
+.vscode/
+.venv/
+
+Results/
+.git/

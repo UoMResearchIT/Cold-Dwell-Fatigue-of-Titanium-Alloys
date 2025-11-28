@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 """
 Command-line interface replacement for the old Tk GUI.
 """

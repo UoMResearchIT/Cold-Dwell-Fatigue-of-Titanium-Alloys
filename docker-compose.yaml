@@ -1,24 +1,20 @@
-# This is a development tool, not used by the Galaxy server
-# Runs the FIJI/ImageJ GUI in the container (Linux / WSL)
-# Will mount ${TEST_DATA} to /data, and the current directory to /tools
+# This is a development tool to run the GUI on a browser
+# See instructions in Dockerfile for headless CLI operation
+# Usage:
+#   export TEST_DATA=/path/to/my/data
+#   docker compose up --build
 
 services:
   dream3d:
     build:
       context: .
       dockerfile: Dockerfile
-    image: dream3d:6.5.171
     environment:
       - DISPLAY=$DISPLAY
-      # - QT_DEBUG_PLUGINS=1
-      - LD_LIBRARY_PATH=/opt/dream3d/lib:${LD_LIBRARY_PATH}
-      - QT_PLUGIN_PATH=/opt/dream3d/Plugins
-      - QT_QPA_PLATFORM_PLUGIN_PATH=/opt/dream3d/Plugins/platforms
-      - XDG_RUNTIME_DIR=/tmp/runtime-root
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - .:/tools
-    #   - ${TEST_DATA}:/data:rw
-    # post_start:
-    working_dir: /tools
-    entrypoint: ["python", "Python/gui.py"]
+      - ./Python:/opt/microtexture/Python
+      - ${TEST_DATA-./Sample_ANG_Files}:/data:rw
+    user: 1000:1000
+    working_dir: /data
+    entrypoint: ["python", "/opt/microtexture/Python/gui.py"]

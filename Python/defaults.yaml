@@ -1,0 +1,42 @@
+# Defaults / config template
+
+# {basename} will be replaced by the input file name without extension
+output_dir: "./Results/{basename}"
+
+# C-Axis Misalignment Threshold (deg) for Pixel Segmentation:
+caxis_misalignment: 20
+
+# Minimum MTR Size, um^2
+min_mtr_size: 10000
+
+# Stress axis direction ('001', '010', '100')
+stress_axis: '001'
+
+# Parameters for .ang files ---
+
+# Confidence Index (CI) Threshold for Good Data
+ci_mask_threshold: 0.05
+# Image Quality (IQ) Threshold for Good Data
+iq_mask_threshold: 20000.0
+# Primary Cleanup CI Threshold
+ci_primary_threshold: 0.05
+# Secondary Cleanup CI Threshold
+ci_secondary_threshold: 0.1
+
+# Cleanup parameters for .ctf files ---
+
+# Error Mask (CI Threshold for Good Data)
+error_mask_threshold: 1
+# Primary Cleanup Band Contrast (BC) Threshold
+bc_primary_threshold: 30
+# Secondary Cleanup BC Threshold
+bc_secondary_threshold: 50
+
+# DREAM3D execution ---
+
+# Path to DREAM3D PipelineRunner, override with $DREAM3D_PIPELINE_RUNNER
+pipeline_runner: "/opt/dream3d/bin/PipelineRunner"
+
+# Path to DREAM3D pipeline template, override with $DREAM3D_PIPELINE_TEMPLATE
+# {EXT} / {ext} tokens will be replaced by the (upper / lower case) input file extension.
+pipeline_template: "/opt/microtexture/Templates/PW_{EXT}_routine_v65.j2"

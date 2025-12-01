@@ -16,7 +16,7 @@ def main():
     args = parse_args()
     render_template(args.pipeline_template, vars(args), args.json_path)
 
-    if not args.no_run and args.pipeline_runner:
+    if not args.no_runner and args.pipeline_runner:
         run_pipeline(args.json_path, runner_path=args.pipeline_runner)
 
     if not args.no_analysis:
@@ -55,9 +55,7 @@ def run_pipeline(json_path: str, runner_path: str):
     """Run the DREAM3D PipelineRunner with the given JSON input file"""
 
     if not os.path.isfile(runner_path):
-        raise FileNotFoundError(
-            f"PipelineRunner not found or invalid: {runner_path}"
-        )
+        raise FileNotFoundError(f"PipelineRunner not found or invalid: {runner_path}")
     if not os.path.isfile(json_path):
         raise FileNotFoundError(f"JSON input file not found or invalid: {json_path}")
 
@@ -87,15 +85,12 @@ def parse_args() -> Namespace:
         config_file_parser_class=YAMLConfigFileParser,
         default_config_files=["./.microtexture", "~/.microtexture"],
     )
-
+    p.add_argument("input_file", help="Path to a single .ang or .ctf file (required)")
     p.add_argument(
         "-c",
         "--config",
         is_config_file=True,
         help=f"Config file path. See {def_config_file} for an example.",
-    )
-    p.add_argument(
-        "-f", "--input-file", help="Path to a single .ang or .ctf file (required)"
     )
     p.add_argument(
         "-o",
@@ -105,10 +100,28 @@ def parse_args() -> Namespace:
         "the input file name without extension.",
     )
     p.add_argument(
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="Parse arguments and quit",
+    )
+    p.add_argument(
+        "-R",
+        "--no-runner",
+        action="store_true",
+        help="Do not attempt to run PipelineRunner or analysis, just generate JSON file.",
+    )
+    p.add_argument(
         "-A",
         "--no-analysis",
         action="store_true",
         help="Trigger PipelineRunner, but don't run post-processing analysis",
+    )
+    p.add_argument(
+        "-f",
+        "--overwrite",
+        action="store_true",
+        help="Overwrite existing files in OUTPUT_DIR",
     )
     p.add_argument("-v", "--verbose", action="store_true")
 
@@ -160,20 +173,20 @@ def parse_args() -> Namespace:
         help="Secondary Cleanup BC Threshold [%(default)s]",
     )
 
-    p.add_argument_group("Analysis parameters")
-    p.add_argument(
+    ana = p.add_argument_group("Analysis parameters")
+    ana.add_argument(
         "--caxis-misalignment",
         type=int,
         default=cfg["caxis_misalignment"],
         help="C-Axis Misalignment Threshold (deg) for Pixel Segmentation [%(default)s]",
     )
-    p.add_argument(
+    ana.add_argument(
         "--min-mtr-size",
         type=float,
         default=cfg["min_mtr_size"],
         help="Minimum MTR Size, um^2 [%(default)s]",
     )
-    p.add_argument(
+    ana.add_argument(
         "--stress-axis",
         choices=["100", "010", "001"],
         default=cfg["stress_axis"],
@@ -188,12 +201,6 @@ def parse_args() -> Namespace:
         "{EXT} and {ext} tokens will be replaced by the (upper / lower case) "
         "input file extension. "
         "Override default by setting DREAM3D_PIPELINE_TEMPLATE.",
-    )
-    d3d.add_argument(
-        "-n",
-        "--no-run",
-        action="store_true",
-        help="Do not attempt to run PipelineRunner or analysis, just generate JSON file.",
     )
     d3d.add_argument(
         "--pipeline-runner",
@@ -236,14 +243,25 @@ def parse_args() -> Namespace:
     args.output_dir = os.path.abspath(
         os.path.expanduser(os.path.expandvars(args.output_dir))
     )
+
+    if (
+        not args.overwrite
+        and os.path.isdir(args.output_dir)
+        and os.listdir(args.output_dir)
+    ):
+        raise PermissionError(
+            f"Output directory {args.output_dir} exists and is not empty. "
+            "Use --overwrite or remove existing files."
+        )
+
     args.json_path = os.path.join(args.output_dir, basename + ".json")
 
-    if not args.no_run and not os.path.isfile(args.pipeline_runner):
+    if not args.no_runner and not os.path.isfile(args.pipeline_runner):
         raise FileNotFoundError(
             f"DREAM3D PipelineRunner not found at: {args.pipeline_runner}"
         )
 
-    if args.verbose:
+    if args.verbose or args.dry_run:
         print("Parsed Inputs:")
         [print(f"\t{k}: {v}") for k, v in vars(args).items()]
 

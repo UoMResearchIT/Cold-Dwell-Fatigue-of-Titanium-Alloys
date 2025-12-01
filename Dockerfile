@@ -3,7 +3,7 @@
 # Usage:
 #   docker buildx build . -t microtexture:latest
 #   docker run --rm microtexture:latest --help
-#   docker run --rm -v ./my/data:/data microtexture:latest -f FILE [...]
+#   docker run --rm -v ./my/data:/data microtexture:latest [...] FILE
 
 FROM ubuntu:24.04
 

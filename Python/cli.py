@@ -19,6 +19,17 @@ def main():
     if not args.no_run and args.pipeline_runner:
         run_pipeline(args.json_path, runner_path=args.pipeline_runner)
 
+    if not args.no_analysis:
+
+        from postprocess import analyzeData
+
+        analyzeData(
+            dream3d_file=os.path.join(args.output_dir, args.basename + ".dream3d"),
+            output_dir=args.output_dir,
+            stress_axis=args.stress_axis,
+            min_mtr_size=args.min_mtr_size,
+        )
+
 
 def render_template(template_name: str, context: dict, json_path: str) -> dict:
     """Render a json.Jinja template and save to json_path"""
@@ -92,6 +103,12 @@ def parse_args() -> Namespace:
         default=cfg["output_dir"],
         help="Results (sub)directory ['%(default)s']. {basename} will be replaced by "
         "the input file name without extension.",
+    )
+    p.add_argument(
+        "-A",
+        "--no-analysis",
+        action="store_true",
+        help="Trigger PipelineRunner, but don't run post-processing analysis",
     )
     p.add_argument("-v", "--verbose", action="store_true")
 

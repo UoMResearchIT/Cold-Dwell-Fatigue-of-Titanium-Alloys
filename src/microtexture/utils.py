@@ -1,10 +1,11 @@
 import sys
-import numpy as np
-from pandas import DataFrame, cut
 import glob
-import h5py
 import json
 import os
+
+import h5py
+import numpy as np
+from pandas import DataFrame, cut
 from skimage.measure import regionprops
 from PIL.Image import fromarray
 from PIL.ImageFont import truetype
@@ -12,7 +13,7 @@ from PIL.ImageDraw import Draw
 from matplotlib.pyplot import get_cmap
 from matplotlib.colors import to_rgb
 
-from config import Config
+from .config import Config
 
 
 def array2rgb(arr, cmap='jet', vmin=0, vmax=1, nan_color='k'):

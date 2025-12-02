@@ -12,3 +12,4 @@ DREAM3D-6.5.49-Win64/
 
 Results/
 .git/
+*.egg-info/

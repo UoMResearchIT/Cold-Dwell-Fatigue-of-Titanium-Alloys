@@ -24,6 +24,6 @@ build = [
 ]
 
 [tool.uv]
-package = false
+package = true
 
 # System dependencies: DREAM3D-6.5.171 must be installed (see Dockerfile)

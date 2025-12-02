@@ -39,4 +39,5 @@ pipeline_runner: "/opt/dream3d/bin/PipelineRunner"
 
 # Path to DREAM3D pipeline template, override with $DREAM3D_PIPELINE_TEMPLATE
 # {EXT} / {ext} tokens will be replaced by the (upper / lower case) input file extension.
-pipeline_template: "/opt/microtexture/Templates/PW_{EXT}_routine_v65.j2"
+# {microtexture} stands for the path to this package.
+pipeline_template: "{microtexture}/templates/PW_{EXT}_routine_v65.j2"

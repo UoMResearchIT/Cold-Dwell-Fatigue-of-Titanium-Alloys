@@ -50,12 +50,9 @@ RUN uv sync
 ENV PATH="/opt/microtexture/.venv/bin:${PATH}"
 RUN mkdir -p /tmp/.cache/matplotlib && chmod a+rw /tmp/.cache/matplotlib
 
-# add a 'microtexture' launcher
-RUN ln -sr src/microtexture/cli.py .venv/bin/microtexture && chmod a+rx .venv/bin/microtexture
-
 ENV DREAM3D_VERSION="6.5.171"
 ENV DREAM3D_PIPELINE_RUNNER="/opt/dream3d/bin/PipelineRunner"
-ENV DREAM3D_PIPELINE_TEMPLATE="/opt/microtexture/Templates/PW_{EXT}_routine_v65.j2"
+ENV DREAM3D_PIPELINE_TEMPLATE="{microtexture}/templates/PW_{EXT}_routine_v65.j2"
 
 RUN useradd -m microtexture
 RUN mkdir /data
@@ -65,5 +62,5 @@ VOLUME /data
 USER microtexture
 WORKDIR /data
 
-ENTRYPOINT ["microtexture"]
+ENTRYPOINT ["python", "-m", "microtexture"]
 CMD ["-h"]

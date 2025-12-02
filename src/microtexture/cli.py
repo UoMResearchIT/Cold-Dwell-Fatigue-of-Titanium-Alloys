@@ -6,9 +6,10 @@ Command-line interface replacement for the old Tk GUI.
 import os
 from glob import glob
 import json
-from configargparse import Namespace, ArgumentParser, YAMLConfigFileParser
 import subprocess
+from importlib.resources import files
 
+from configargparse import Namespace, ArgumentParser, YAMLConfigFileParser
 from jinja2 import Environment, FileSystemLoader
 
 
@@ -21,7 +22,7 @@ def main():
 
     if not args.no_analysis:
 
-        from postprocess import analyzeData
+        from .postprocess import analyzeData
 
         analyzeData(
             dream3d_file=os.path.join(args.output_dir, args.basename + ".dream3d"),
@@ -199,7 +200,7 @@ def parse_args() -> Namespace:
         default=os.getenv("DREAM3D_PIPELINE_TEMPLATE", cfg["pipeline_template"]),
         help="Path to DREAM3D pipeline template ['%(default)s']. "
         "{EXT} and {ext} tokens will be replaced by the (upper / lower case) "
-        "input file extension. "
+        "input file extension. {microtexture} stands for this package's path. "
         "Override default by setting DREAM3D_PIPELINE_TEMPLATE.",
     )
     d3d.add_argument(
@@ -229,7 +230,9 @@ def parse_args() -> Namespace:
         raise ValueError(f"Input file must be .ang or .ctf; got .{ext}.")
 
     args.pipeline_template = args.pipeline_template.format(
-        EXT=ext.upper(), ext=ext.lower()
+        EXT=ext.upper(),
+        ext=ext.lower(),
+        microtexture=files("microtexture"),
     )
     if not os.path.isfile(args.pipeline_template):
         raise FileNotFoundError(

@@ -1,7 +1,8 @@
 from tkinter import Tk
 from tkinter.ttk import Style, Notebook
-from forms import PipelineBuilderUI_PW9, Dream3dMicrotextureAnalysis, UserGuide
-from __init__ import __version__
+
+from .forms import PipelineBuilderUI_PW9, Dream3dMicrotextureAnalysis, UserGuide
+from . import __version__
 
 
 def main():

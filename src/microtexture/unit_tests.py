@@ -1,5 +1,4 @@
 import unittest
-from forms import PipelineBuilderUI_PW9
 
 
 class UnitTests(unittest.TestCase):
@@ -9,6 +8,7 @@ class UnitTests(unittest.TestCase):
     """
 
     def setUp(self):
+        from .forms import PipelineBuilderUI_PW9
         self.app = PipelineBuilderUI_PW9(gui_mode=False)
 
     def tearDown(self):

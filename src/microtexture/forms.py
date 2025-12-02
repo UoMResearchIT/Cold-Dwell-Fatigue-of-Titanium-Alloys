@@ -1,24 +1,25 @@
-from tkinter import Text, TOP, BOTH, X, LEFT, RIGHT, StringVar, END, NW, WORD
-from tkinter.ttk import Frame, Label, Entry, Button, Style, Progressbar, Radiobutton
-from functools import partial
-from tkinter import filedialog, messagebox, IntVar
-from types import SimpleNamespace
 import os
 import json
 import glob
 import time
 import re
-import numpy as np
 import subprocess
+import warnings
+from functools import partial
+from types import SimpleNamespace
+
+import numpy as np
 import psutil
-from utils import setup_directories, create_d3d_input_files_v65_ang, create_d3d_input_files_v65_ctf
-from utils import read_dream3d_file, add_scalebar, array2rgb
+from imageio import imsave
 from skimage.segmentation import mark_boundaries
 from pandas import DataFrame, concat, ExcelWriter
-import warnings
-from imageio import imsave
+from tkinter import Text, TOP, BOTH, X, LEFT, RIGHT, StringVar, END, NW, WORD
+from tkinter.ttk import Frame, Label, Entry, Button, Style, Progressbar, Radiobutton
+from tkinter import filedialog, messagebox, IntVar
 
-from config import Config
+from .utils import setup_directories, create_d3d_input_files_v65_ang, create_d3d_input_files_v65_ctf
+from .utils import read_dream3d_file, add_scalebar, array2rgb
+from .config import Config
 
 _FONTS = SimpleNamespace(
     label=("DejaVu Sans", 14, "bold"),

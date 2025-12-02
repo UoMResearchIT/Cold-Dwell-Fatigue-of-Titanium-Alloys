@@ -1,6 +1,7 @@
 import os
 from types import SimpleNamespace
 from dotenv import load_dotenv, find_dotenv
+from importlib.resources import files
 
 
 class Config:
@@ -26,4 +27,8 @@ class Config:
                 assert v is not None, f"{a.upper()} not set in environment"
 
     def dream3d_pipeline_template(self, ext: str) -> str:
-        return self._dream3d_pipeline_template.format(EXT=ext.upper(), ext=ext.lower())
+        return self._dream3d_pipeline_template.format(
+            microtexture=files("microtexture"),
+            EXT=ext.upper(),
+            ext=ext.lower(),
+        )

@@ -13,8 +13,8 @@ services:
       - DISPLAY=$DISPLAY
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - ./Python:/opt/microtexture/Python
+      - ./src:/opt/microtexture/src
       - ${TEST_DATA-./Sample_ANG_Files}:/data:rw
     user: 1000:1000
     working_dir: /data
-    entrypoint: ["python", "/opt/microtexture/Python/gui.py"]
+    entrypoint: ["python", "/opt/microtexture/src/microtexture/gui.py"]

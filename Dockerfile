@@ -51,7 +51,7 @@ ENV PATH="/opt/microtexture/.venv/bin:${PATH}"
 RUN mkdir -p /tmp/.cache/matplotlib && chmod a+rw /tmp/.cache/matplotlib
 
 # add a 'microtexture' launcher
-RUN ln -sr Python/cli.py .venv/bin/microtexture && chmod a+rx .venv/bin/microtexture
+RUN ln -sr src/microtexture/cli.py .venv/bin/microtexture && chmod a+rx .venv/bin/microtexture
 
 ENV DREAM3D_VERSION="6.5.171"
 ENV DREAM3D_PIPELINE_RUNNER="/opt/dream3d/bin/PipelineRunner"

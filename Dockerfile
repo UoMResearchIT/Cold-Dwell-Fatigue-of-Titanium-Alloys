@@ -5,7 +5,7 @@
 #   docker run --rm microtexture:latest --help
 #   docker run --rm -v ./my/data:/data microtexture:latest [...] FILE
 
-FROM ubuntu:24.04
+FROM ubuntu:24.04 AS dream3d
 
 # Install DREAM3D ----
 RUN apt-get update && apt-get install -y \
@@ -28,7 +28,6 @@ RUN apt-get update && apt-get install -y \
     libx11-xcb-dev \
     libxcb-util-dev \
     libxkbcommon-x11-dev \
-    python3-tk \
     && rm -rf /var/lib/apt/lists/*
 
 ENV LD_LIBRARY_PATH=/opt/dream3d/lib
@@ -37,6 +36,8 @@ ENV QT_QPA_PLATFORM_PLUGIN_PATH=/opt/dream3d/Plugins/platforms
 ENV XDG_RUNTIME_DIR=/tmp/runtime-root
 
 ENV PATH="/opt/dream3d/bin:${PATH}"
+
+FROM dream3d AS base
 
 # "Install" this project ----
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
@@ -63,4 +64,20 @@ USER microtexture
 WORKDIR /data
 
 ENTRYPOINT ["python", "-m", "microtexture"]
+
+FROM base AS gui
+USER root
+WORKDIR /opt/microtexture
+
+RUN apt-get update && apt-get install -y \
+    python3-tk \
+    && rm -rf /var/lib/apt/lists/*
+RUN uv sync --group gui
+
+USER microtexture
+WORKDIR /data
+
+CMD ["gui"]
+
+FROM base AS final
 CMD ["-h"]

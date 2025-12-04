@@ -9,6 +9,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: gui
     environment:
       - DISPLAY=$DISPLAY
     volumes:
@@ -17,4 +18,3 @@ services:
       - ${TEST_DATA-./Sample_ANG_Files}:/data:rw
     user: 1000:1000
     working_dir: /data
-    entrypoint: ["python", "-m", "microtexture", "gui"]

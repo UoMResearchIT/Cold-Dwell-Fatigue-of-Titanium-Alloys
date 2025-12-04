@@ -5,15 +5,12 @@ description = "Microtexture analysis and Dream3D pipeline automation"
 requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.3.4,<3",
-    "pillow>=12.0.0,<13",
     "matplotlib>=3.10.7,<4",
     "pandas>=2.3.3,<3",
     "scikit-image>=0.25.2,<0.26",
     "h5py>=3.13.0,<4",
     "openpyxl>=3.1.5,<4",
     "pyyaml>=6.0.3,<7",
-    "psutil>=7.1.3,<8",
-    "dotenv>=0.9.9",
     "jinja2>=3.1.6",
     "configargparse>=1.7.1",
 ]
@@ -25,5 +22,12 @@ build = [
 
 [tool.uv]
 package = true
+
+[dependency-groups]
+gui = [
+    "pillow>=12.0.0,<13",
+    "psutil>=7.1.3,<8",
+    "dotenv>=0.9.9",
+]
 
 # System dependencies: DREAM3D-6.5.171 must be installed (see Dockerfile)

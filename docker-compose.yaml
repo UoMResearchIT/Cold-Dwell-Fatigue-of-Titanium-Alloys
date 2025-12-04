@@ -1,20 +1,16 @@
-# This is a development tool to run the GUI on a browser
-# See instructions in Dockerfile for headless CLI operation
+# This is a development tool to run the pipeline on the test dataset
 # Usage:
-#   export TEST_DATA=/path/to/my/data
 #   docker compose up --build
 
 services:
-  dream3d:
+  dream3d-test:
     build:
       context: .
       dockerfile: Dockerfile
-      target: gui
-    environment:
-      - DISPLAY=$DISPLAY
+      target: base
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix
       - ./src:/opt/microtexture/src
-      - ${TEST_DATA-./Sample_ANG_Files}:/data:rw
+      - ./Sample_ANG_Files:/data:rw
     user: 1000:1000
     working_dir: /data
+    command: ["--overwrite", "*.ang"]

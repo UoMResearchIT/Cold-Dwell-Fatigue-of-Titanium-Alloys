@@ -30,7 +30,7 @@ def analyzeData(
 ):
 
     if not dream3d_file or not os.path.isfile(dream3d_file):
-        raise FileNotFoundError("Failed to find dream3d file at: {pattern}")
+        raise FileNotFoundError(f"Failed to find dream3d file at: {dream3d_file}")
 
     if output_dir is None:
         output_dir = os.path.dirname(dream3d_file)

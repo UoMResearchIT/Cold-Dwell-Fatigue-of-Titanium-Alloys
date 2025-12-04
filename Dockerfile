@@ -72,7 +72,7 @@ WORKDIR /opt/microtexture
 RUN apt-get update && apt-get install -y \
     python3-tk \
     && rm -rf /var/lib/apt/lists/*
-RUN uv sync --group gui
+RUN uv sync --extra gui
 
 USER microtexture
 WORKDIR /data

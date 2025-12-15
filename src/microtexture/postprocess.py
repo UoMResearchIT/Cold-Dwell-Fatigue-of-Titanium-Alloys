@@ -25,7 +25,7 @@ from imageio import imsave
 def analyzeData(
     dream3d_file: str = None,
     output_dir: str = None,
-    stress_axis: Literal["001", "010", "001"] = "001",
+    stress_axis: Literal["100", "010", "001"] = "001",
     min_mtr_size: int = 10000,
 ):
 
@@ -36,7 +36,7 @@ def analyzeData(
         output_dir = os.path.dirname(dream3d_file)
     assert os.path.isdir(output_dir)
 
-    assert stress_axis in ("001", "010", "001")
+    assert stress_axis in ("100", "010", "001")
     ref_dir = list(map(int, stress_axis))
 
     print(f"Processing {dream3d_file}")

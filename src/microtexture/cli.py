@@ -177,7 +177,7 @@ def parse_args() -> Namespace:
     ana = p.add_argument_group("Analysis parameters")
     ana.add_argument(
         "--caxis-misalignment",
-        type=int,
+        type=float,
         default=cfg["caxis_misalignment"],
         help="C-Axis Misalignment Threshold (deg) for Pixel Segmentation [%(default)s]",
     )

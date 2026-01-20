@@ -96,7 +96,7 @@ def parse_args() -> Namespace:
     p.add_argument(
         "-o",
         "--output-dir",
-        default=cfg["output_dir"],
+        default=cfg["output-dir"],
         help="Results (sub)directory ['%(default)s']. {basename} will be replaced by "
         "the input file name without extension.",
     )
@@ -131,25 +131,25 @@ def parse_args() -> Namespace:
     ang.add_argument(
         "--ci-mask-threshold",
         type=float,
-        default=cfg["ci_mask_threshold"],
+        default=cfg["ci-mask-threshold"],
         help="Confidence Index (CI) Threshold for Good Data [%(default)s]",
     )
     ang.add_argument(
         "--iq-mask-threshold",
         type=float,
-        default=cfg["iq_mask_threshold"],
+        default=cfg["iq-mask-threshold"],
         help="Image Quality (IQ) Threshold for Good Data [%(default)s]",
     )
     ang.add_argument(
         "--ci-primary-threshold",
         type=float,
-        default=cfg["ci_primary_threshold"],
+        default=cfg["ci-primary-threshold"],
         help="Primary Cleanup CI Threshold [%(default)s]",
     )
     ang.add_argument(
         "--ci-secondary-threshold",
         type=float,
-        default=cfg["ci_secondary_threshold"],
+        default=cfg["ci-secondary-threshold"],
         help="Secondary Cleanup CI Threshold [%(default)s]",
     )
 
@@ -158,19 +158,19 @@ def parse_args() -> Namespace:
     ctf.add_argument(
         "--error-mask-threshold",
         type=int,
-        default=cfg["error_mask_threshold"],
+        default=cfg["error-mask-threshold"],
         help="Confidence Index (CI) Threshold for Good Data [%(default)s]",
     )
     ctf.add_argument(
         "--bc-primary-threshold",
         type=float,
-        default=cfg["bc_primary_threshold"],
+        default=cfg["bc-primary-threshold"],
         help="Primary Cleanup Band Contrast (BC) Threshold [%(default)s]",
     )
     ctf.add_argument(
         "--bc-secondary-threshold",
         type=float,
-        default=cfg["bc_secondary_threshold"],
+        default=cfg["bc-secondary-threshold"],
         help="Secondary Cleanup BC Threshold [%(default)s]",
     )
 
@@ -178,26 +178,26 @@ def parse_args() -> Namespace:
     ana.add_argument(
         "--caxis-misalignment",
         type=float,
-        default=cfg["caxis_misalignment"],
+        default=cfg["caxis-misalignment"],
         help="C-Axis Misalignment Threshold (deg) for Pixel Segmentation [%(default)s]",
     )
     ana.add_argument(
         "--min-mtr-size",
         type=float,
-        default=cfg["min_mtr_size"],
+        default=cfg["min-mtr-size"],
         help="Minimum MTR Size, um^2 [%(default)s]",
     )
     ana.add_argument(
         "--stress-axis",
         choices=["100", "010", "001"],
-        default=cfg["stress_axis"],
+        default=cfg["stress-axis"],
         help="Stress axis direction (x='100', y='010', z='001') ['%(default)s']",
     )
 
     d3d = p.add_argument_group("DREAM3D execution")
     d3d.add_argument(
         "--pipeline-template",
-        default=os.getenv("DREAM3D_PIPELINE_TEMPLATE", cfg["pipeline_template"]),
+        default=os.getenv("DREAM3D_PIPELINE_TEMPLATE", cfg["pipeline-template"]),
         help="Path to DREAM3D pipeline template ['%(default)s']. "
         "{EXT} and {ext} tokens will be replaced by the (upper / lower case) "
         "input file extension. {microtexture} stands for this package's path. "
@@ -205,7 +205,7 @@ def parse_args() -> Namespace:
     )
     d3d.add_argument(
         "--pipeline-runner",
-        default=os.getenv("DREAM3D_PIPELINE_RUNNER", cfg["pipeline_runner"]),
+        default=os.getenv("DREAM3D_PIPELINE_RUNNER", cfg["pipeline-runner"]),
         help="Path to DREAM3D PipelineRunner [%(default)s]. "
         "Override default by setting DREAM3D_PIPELINE_RUNNER.",
     )

@@ -1,0 +1,14 @@
+{
+  "InputFile": "TMP/test.ctf",
+  "CIMaskThreshold": 0.06,
+  "IQMaskThreshold": 20001.0,
+  "CIPrimaryThreshold": 0.06,
+  "CISecondaryThreshold": 0.2,
+  "CAxisMisalignment": 21,
+  "MinMTRSize": 10001,
+  "ErrorMaskThreshold": 2,
+  "BCPrimaryThreshold": 31,
+  "BCSecondaryThreshold": 51,
+  "OutputSubdir": "/tmp/test_results/test/sub",
+  "OutputFile": "/tmp/test_results/test/test.ext"
+}

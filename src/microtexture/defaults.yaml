@@ -1,43 +1,43 @@
 # Defaults / config template
 
 # {basename} will be replaced by the input file name without extension
-output_dir: "./Results/{basename}"
+output-dir: "./Results/{basename}"
 
 # C-Axis Misalignment Threshold (deg) for Pixel Segmentation:
-caxis_misalignment: 20
+caxis-misalignment: 20
 
 # Minimum MTR Size, um^2
-min_mtr_size: 10000
+min-mtr-size: 10000
 
 # Stress axis direction ('001', '010', '100')
-stress_axis: '001'
+stress-axis: '001'
 
 # Parameters for .ang files ---
 
 # Confidence Index (CI) Threshold for Good Data
-ci_mask_threshold: 0.05
+ci-mask-threshold: 0.05
 # Image Quality (IQ) Threshold for Good Data
-iq_mask_threshold: 20000.0
+iq-mask-threshold: 20000.0
 # Primary Cleanup CI Threshold
-ci_primary_threshold: 0.05
+ci-primary-threshold: 0.05
 # Secondary Cleanup CI Threshold
-ci_secondary_threshold: 0.1
+ci-secondary-threshold: 0.1
 
 # Cleanup parameters for .ctf files ---
 
 # Error Mask (CI Threshold for Good Data)
-error_mask_threshold: 1
+error-mask-threshold: 1
 # Primary Cleanup Band Contrast (BC) Threshold
-bc_primary_threshold: 30
+bc-primary-threshold: 30
 # Secondary Cleanup BC Threshold
-bc_secondary_threshold: 50
+bc-secondary-threshold: 50
 
 # DREAM3D execution ---
 
-# Path to DREAM3D PipelineRunner, override with $DREAM3D_PIPELINE_RUNNER
-pipeline_runner: "/opt/dream3d/bin/PipelineRunner"
+# Path to DREAM3D PipelineRunner, override with $DREAM3D-PIPELINE-RUNNER
+pipeline-runner: "/opt/dream3d/bin/PipelineRunner"
 
-# Path to DREAM3D pipeline template, override with $DREAM3D_PIPELINE_TEMPLATE
+# Path to DREAM3D pipeline template, override with $DREAM3D-PIPELINE-TEMPLATE
 # {EXT} / {ext} tokens will be replaced by the (upper / lower case) input file extension.
 # {microtexture} stands for the path to this package.
-pipeline_template: "{microtexture}/templates/PW_{EXT}_routine_v65.j2"
+pipeline-template: "{microtexture}/templates/PW_{EXT}_routine_v65.j2"

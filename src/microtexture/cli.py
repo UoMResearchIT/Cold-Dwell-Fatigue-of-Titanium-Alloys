@@ -15,6 +15,10 @@ from jinja2 import Environment, FileSystemLoader
 
 def main():
     args = parse_args()
+    if args.dry_run:
+        print("Dry run: Exiting before JSON generation or pipeline execution.")
+        return
+
     render_template(args.pipeline_template, vars(args), args.json_path)
 
     if not args.no_runner and args.pipeline_runner:
@@ -248,7 +252,7 @@ def parse_args() -> Namespace:
     )
 
     if (
-        not args.overwrite
+        not args.dry_run and not args.overwrite
         and os.path.isdir(args.output_dir)
         and os.listdir(args.output_dir)
     ):
@@ -259,7 +263,7 @@ def parse_args() -> Namespace:
 
     args.json_path = os.path.join(args.output_dir, basename + ".json")
 
-    if not args.no_runner and not os.path.isfile(args.pipeline_runner):
+    if not args.dry_run and not args.no_runner and not os.path.isfile(args.pipeline_runner):
         raise FileNotFoundError(
             f"DREAM3D PipelineRunner not found at: {args.pipeline_runner}"
         )

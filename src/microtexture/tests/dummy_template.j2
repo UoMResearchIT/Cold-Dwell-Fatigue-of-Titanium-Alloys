@@ -1,0 +1,17 @@
+{% macro output_path() -%}
+    {{output_dir}}/{{varargs|join('')}}
+{%- endmacro %}
+{
+    "InputFile": "{{ input_file }}",
+    "CIMaskThreshold": {{ ci_mask_threshold }},
+    "IQMaskThreshold": {{ iq_mask_threshold }},
+    "CIPrimaryThreshold": {{ ci_primary_threshold }},
+    "CISecondaryThreshold": {{ ci_secondary_threshold }},
+    "CAxisMisalignment": {{ caxis_misalignment }},
+    "MinMTRSize": {{ min_mtr_size }},
+    "ErrorMaskThreshold": {{ error_mask_threshold }},
+    "BCPrimaryThreshold": {{ bc_primary_threshold }},
+    "BCSecondaryThreshold": {{ bc_secondary_threshold }},
+    "OutputSubdir": "{{ output_path('sub') }}",
+    "OutputFile": "{{ output_path(basename, '.ext') }}"
+}

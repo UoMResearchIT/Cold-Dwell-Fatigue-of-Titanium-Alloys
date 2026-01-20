@@ -1,0 +1,24 @@
+# Test config file
+
+output-dir: "/tmp/test_results/{basename}"
+caxis-misalignment: 21
+min-mtr-size: 10001
+stress-axis: '100'
+
+# Parameters for .ang files ---
+
+ci-mask-threshold: 0.06
+iq-mask-threshold: 20001.0
+ci-primary-threshold: 0.06
+ci-secondary-threshold: 0.2
+
+# Cleanup parameters for .ctf files ---
+
+error-mask-threshold: 2
+bc-primary-threshold: 31
+bc-secondary-threshold: 51
+
+# DREAM3D execution ---
+
+pipeline-runner: "/dev/null"
+pipeline-template: "{microtexture}/tests/dummy_template.j2"

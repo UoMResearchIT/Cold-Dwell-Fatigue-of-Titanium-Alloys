@@ -70,11 +70,9 @@ def run_pipeline(json_path: str, runner_path: str):
     if status.returncode == 0:
         print(f"PipelineRunner executed successfully for: {json_path}")
     else:
-        print(f"PipelineRunner failed for: {json_path}")
-        print("STDOUT:")
-        print(status.stdout.decode())
-        print("STDERR:")
-        print(status.stderr.decode())
+        raise RuntimeError(f"PipelineRunner failed for: {json_path}\n"
+                           f"STDOUT:\n{status.stdout.decode()}\n"
+                           f"STDERR:\n{status.stderr.decode()}")
 
 
 def parse_args() -> Namespace:

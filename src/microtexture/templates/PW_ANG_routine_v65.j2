@@ -6,7 +6,7 @@
         "CellAttributeMatrixName": "CellData",
         "CellEnsembleAttributeMatrixName": "CellEnsembleData",
         "DataContainerName": "ImageDataContainer",
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Import EDAX EBSD Data (.ang)",
         "Filter_Name": "ReadAngData",
@@ -19,7 +19,7 @@
             "Data Array Name": "",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Rotate Sample Reference Frame",
         "Filter_Name": "RotateSampleRefFrame",
@@ -37,7 +37,7 @@
             "Data Array Name": "EulerAngles",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Rotate Euler Reference Frame",
         "Filter_Name": "RotateEulerRefFrame",
@@ -55,7 +55,7 @@
             "Data Array Name": "EulerAngles",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Rotate Euler Reference Frame",
         "Filter_Name": "RotateEulerRefFrame",
@@ -73,7 +73,7 @@
             "Data Array Name": "EulerAngles",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Rotate Euler Reference Frame",
         "Filter_Name": "RotateEulerRefFrame",
@@ -102,7 +102,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Generate IPF Colors",
         "Filter_Name": "GenerateIPFColors",
@@ -136,7 +136,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Generate IPF Colors",
         "Filter_Name": "GenerateIPFColors",
@@ -170,7 +170,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Generate IPF Colors",
         "Filter_Name": "GenerateIPFColors",
@@ -189,7 +189,7 @@
     },
     "08": {
         "DestinationArrayName": "Mask",
-        "FilterVersion": "1.2.675",
+        "FilterVersion": "1.2.828",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Threshold Objects",
         "Filter_Name": "MultiThresholdObjects",
@@ -227,7 +227,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Export Pole Figure Images",
         "Filter_Name": "WritePoleFigure",
@@ -238,7 +238,6 @@
             "Data Array Name": "Mask",
             "Data Container Name": "ImageDataContainer"
         },
-        "ImageFormat": 0,
         "ImageLayout": 2,
         "ImagePrefix": "Thresholded_Pole_Figure_",
         "ImageSize": 256,
@@ -254,7 +253,7 @@
         "UseGoodVoxels": 1
     },
     "10": {
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Convert Orientation Representation",
         "Filter_Name": "ConvertOrientations",
@@ -270,7 +269,7 @@
     },
     "11": {
         "CAxisLocationsArrayName": "Raw_CAxes",
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Find C-Axis Locations",
         "Filter_Name": "FindCAxisLocations",
@@ -292,7 +291,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Neighbor Orientation Comparison (Bad Data)",
         "Filter_Name": "BadDataNeighborOrientationCheck",
@@ -316,7 +315,7 @@
             "Data Array Name": "Confidence Index",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Replace Element Attributes with Neighbor (Threshold)",
         "Filter_Name": "ReplaceElementAttributesWithNeighborValues",
@@ -341,11 +340,13 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Neighbor Orientation Correlation",
         "Filter_Name": "NeighborOrientationCorrelation",
         "Filter_Uuid": "{6427cd5e-0ad2-5a24-8847-29f8e0720f4f}",
+        "IgnoredDataArrayPaths": [
+        ],
         "Level": 3,
         "MinConfidence": {{ ci_secondary_threshold }},
         "MisorientationTolerance": 5,
@@ -357,7 +358,7 @@
     },
     "15": {
         "FillHoles": 0,
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Isolate Largest Feature (Identify Sample)",
         "Filter_Name": "IdentifySample",
@@ -382,7 +383,7 @@
             "Data Container Name": "ImageDataContainer"
         },
         "FeatureIdsArrayName": "MTRIds",
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Segment Features (C-Axis Misalignment)",
         "Filter_Name": "CAxisSegmentFeatures",
@@ -416,7 +417,7 @@
             "Data Array Name": "Phases",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Find Feature Phases",
         "Filter_Name": "FindFeaturePhases",
@@ -448,7 +449,7 @@
             "Data Array Name": "MTRIds",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Find Feature Average Orientations",
         "Filter_Name": "FindAvgOrientations",
@@ -470,7 +471,7 @@
             "Data Array Name": "MTRIds",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Find Feature Centroids",
         "Filter_Name": "FindFeatureCentroids",
@@ -488,7 +489,7 @@
             "Data Array Name": "MTRIds",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Find Feature Neighbors",
         "Filter_Name": "FindNeighbors",
@@ -512,11 +513,13 @@
             "Data Array Name": "Phases",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Minimum Number of Neighbors",
         "Filter_Name": "MinNeighbors",
         "Filter_Uuid": "{dab5de3c-5f81-5bb5-8490-73521e1183ea}",
+        "IgnoredDataArrayPaths": [
+        ],
         "MinNumNeighbors": 4,
         "NumNeighborsArrayPath": {
             "Attribute Matrix Name": "CellFeatureData",
@@ -532,11 +535,13 @@
             "Data Array Name": "MTRIds",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Erode/Dilate Bad Data",
         "Filter_Name": "ErodeDilateBadData",
         "Filter_Uuid": "{3adfe077-c3c9-5cd0-ad74-cf5f8ff3d254}",
+        "IgnoredDataArrayPaths": [
+        ],
         "NumIterations": 2,
         "XDirOn": 1,
         "YDirOn": 1,
@@ -549,11 +554,13 @@
             "Data Array Name": "MTRIds",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Erode/Dilate Bad Data",
         "Filter_Name": "ErodeDilateBadData",
         "Filter_Uuid": "{3adfe077-c3c9-5cd0-ad74-cf5f8ff3d254}",
+        "IgnoredDataArrayPaths": [
+        ],
         "NumIterations": 2,
         "XDirOn": 1,
         "YDirOn": 1,
@@ -570,11 +577,13 @@
             "Data Array Name": "MTRIds",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Fill Bad Data",
         "Filter_Name": "FillBadData",
         "Filter_Uuid": "{30ae0a1e-3d94-5dab-b279-c5727ab5d7ff}",
+        "IgnoredDataArrayPaths": [
+        ],
         "MinAllowedDefectSize": 1000,
         "StoreAsNewPhase": 0
     },
@@ -590,7 +599,7 @@
             "Data Array Name": "MTRIds",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Find Feature Sizes",
         "Filter_Name": "FindSizes",
@@ -606,7 +615,7 @@
             "Data Array Name": "MTRIds",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "1.2.675",
+        "FilterVersion": "1.2.828",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Create Element Array from Feature Array",
         "Filter_Name": "CopyFeatureArrayToElementArray",
@@ -628,7 +637,7 @@
             "Data Array Name": "MTRIds",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Find Average C-Axis Orientations",
         "Filter_Name": "FindAvgCAxes",
@@ -646,7 +655,7 @@
             "Data Array Name": "MTRIds",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "1.2.675",
+        "FilterVersion": "1.2.828",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Create Element Array from Feature Array",
         "Filter_Name": "CopyFeatureArrayToElementArray",
@@ -676,7 +685,7 @@
         },
         "FeatureReferenceCAxisMisorientationsArrayName": "FeatureReferenceCAxisMisorientations",
         "FeatureStdevCAxisMisorientationsArrayName": "FeatureStdevCAxisMisorientations",
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Find Feature Reference C-Axis Misalignments",
         "Filter_Name": "FindFeatureReferenceCAxisMisorientations",
@@ -704,7 +713,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Generate IPF Colors",
         "Filter_Name": "GenerateIPFColors",
@@ -738,7 +747,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Generate IPF Colors",
         "Filter_Name": "GenerateIPFColors",
@@ -772,7 +781,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Generate IPF Colors",
         "Filter_Name": "GenerateIPFColors",
@@ -806,7 +815,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Generate IPF Colors",
         "Filter_Name": "GenerateIPFColors",
@@ -840,7 +849,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Generate IPF Colors",
         "Filter_Name": "GenerateIPFColors",
@@ -874,7 +883,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Generate IPF Colors",
         "Filter_Name": "GenerateIPFColors",
@@ -903,7 +912,7 @@
             "Data Array Name": "MTRIds",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Find Feature Neighbors",
         "Filter_Name": "FindNeighbors",
@@ -932,7 +941,7 @@
             "Data Array Name": "Phases",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Find Feature Neighbor Misorientations",
         "Filter_Name": "FindMisorientations",
@@ -963,7 +972,7 @@
             "Data Array Name": "Phases",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Find Feature Neighbor C-Axis Misalignments",
         "Filter_Name": "FindFeatureNeighborCAxisMisalignments",
@@ -982,7 +991,7 @@
             "Data Array Name": "MTRIds",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "1.2.675",
+        "FilterVersion": "1.2.828",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Create Element Array from Feature Array",
         "Filter_Name": "CopyFeatureArrayToElementArray",
@@ -995,7 +1004,7 @@
     },
     "40": {
         "DestinationArrayName": "MTR_Mask",
-        "FilterVersion": "1.2.675",
+        "FilterVersion": "1.2.828",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Threshold Objects",
         "Filter_Name": "MultiThresholdObjects",
@@ -1027,7 +1036,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Generate IPF Colors",
         "Filter_Name": "GenerateIPFColors",
@@ -1061,7 +1070,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Generate IPF Colors",
         "Filter_Name": "GenerateIPFColors",
@@ -1095,7 +1104,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Generate IPF Colors",
         "Filter_Name": "GenerateIPFColors",
@@ -1128,7 +1137,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Export Pole Figure Images",
         "Filter_Name": "WritePoleFigure",
@@ -1139,7 +1148,6 @@
             "Data Array Name": "Mask",
             "Data Container Name": "ImageDataContainer"
         },
-        "ImageFormat": 0,
         "ImageLayout": 2,
         "ImagePrefix": "Cleaned_Pole_Figure_",
         "ImageSize": 256,
@@ -1170,7 +1178,7 @@
             "Data Array Name": "CrystalStructures",
             "Data Container Name": "ImageDataContainer"
         },
-        "FilterVersion": "6.5.49",
+        "FilterVersion": "6.5.171",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Export Pole Figure Images",
         "Filter_Name": "WritePoleFigure",
@@ -1181,7 +1189,6 @@
             "Data Array Name": "MTR_Mask",
             "Data Container Name": "ImageDataContainer"
         },
-        "ImageFormat": 0,
         "ImageLayout": 2,
         "ImagePrefix": "MTR_Pole_Figure_",
         "ImageSize": 256,
@@ -1198,7 +1205,7 @@
     },
     "46": {
         "FileName": "{{ output_path(basename, '_IPF_Raw_Z.tif') }}",
-        "FilterVersion": "1.0.454",
+        "FilterVersion": "1.0.504",
         "Filter_Enabled": true,
         "Filter_Human_Label": "ITK::Image Writer",
         "Filter_Name": "ITKImageWriter",
@@ -1212,7 +1219,7 @@
     },
     "47": {
         "FileName": "{{ output_path(basename, '_IPF_Cleaned_Z.tif') }}",
-        "FilterVersion": "1.0.454",
+        "FilterVersion": "1.0.504",
         "Filter_Enabled": true,
         "Filter_Human_Label": "ITK::Image Writer",
         "Filter_Name": "ITKImageWriter",
@@ -1226,7 +1233,7 @@
     },
     "48": {
         "FileName": "{{ output_path(basename,'_IPF_Average_Z.tif') }}",
-        "FilterVersion": "1.0.454",
+        "FilterVersion": "1.0.504",
         "Filter_Enabled": true,
         "Filter_Human_Label": "ITK::Image Writer",
         "Filter_Name": "ITKImageWriter",
@@ -1240,7 +1247,7 @@
     },
     "49": {
         "FileName": "{{ output_path(basename,'_IPF_MTR_Z.tif') }}",
-        "FilterVersion": "1.0.454",
+        "FilterVersion": "1.0.504",
         "Filter_Enabled": true,
         "Filter_Human_Label": "ITK::Image Writer",
         "Filter_Name": "ITKImageWriter",
@@ -1253,7 +1260,7 @@
         "Plane": 0
     },
     "50": {
-        "FilterVersion": "1.2.675",
+        "FilterVersion": "1.2.828",
         "Filter_Enabled": true,
         "Filter_Human_Label": "Write DREAM.3D Data File",
         "Filter_Name": "DataContainerWriter",
@@ -1265,6 +1272,6 @@
     "PipelineBuilder": {
         "Name": "PW_ANG_routine_v65",
         "Number_Filters": 51,
-        "Version": 6.5
+        "Version": 6
     }
 }

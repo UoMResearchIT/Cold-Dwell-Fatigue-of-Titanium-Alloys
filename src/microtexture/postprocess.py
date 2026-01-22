@@ -130,6 +130,7 @@ def analyzeData(
 
     # Calculate Descriptive Statistics
     stats = grps.describe()
+    stats = stats.rename(columns={"count": "number_of_mtrs"})
 
     # Calculate Area Fraction
     stats2 = grps.agg(Total_Area_um2=("MTR Area, um^2", "sum")).reset_index()
@@ -157,14 +158,21 @@ def analyzeData(
 
     # Save Summary Statistics to Results Folder
     output_path = os.path.join(output_dir, "Microtexture_Statistics_Summary.xlsx")
+    stats2excel(output_path, stats, stats2, scan_areas)
+
+    md_path = os.path.join(output_dir, "Microtexture_Statistics_Summary.md")
+    stats2markdown(md_path, stats, stats2, scan_areas)
+
+    print("Program has completed successfully")
+
+
+def stats2excel(output_path, stats, stats2, scan_areas):
+    """Original EXCEL summary file"""
 
     writer = ExcelWriter(output_path)
 
     # Unroll Multi-index columns and write each dataset to its own tab
-    columns = np.unique([n[0] for n in stats.columns])
-
-    for col in columns:
-        stats = stats.rename(columns={"count": "number_of_mtrs"})
+    for col in np.unique([n[0] for n in stats.columns]):
         stats[col].to_excel(writer, sheet_name=col, float_format="%.4f")
 
     stats2.to_excel(writer, sheet_name="Area Fractions", float_format="%.4f")
@@ -173,7 +181,39 @@ def analyzeData(
     )
     writer.close()
 
-    print("Program has completed successfully")
+
+def stats2markdown(output_path, stats, stats2, scan_areas):
+    """
+    A diff/preview friendly markdown version of the summary file
+    """
+
+    sample_name = stats.index.get_level_values(0).unique().tolist()
+    assert len(sample_name) == 1
+
+    content = [f"## Sample: {sample_name[0]}\n\n"]
+
+    # Scan areas
+    content.append("### Scan Areas and Cleanup Summary\n")
+    content.append(scan_areas.reset_index(drop=True).to_markdown(index=False, floatfmt=".4g"))
+    content.append("\n")
+
+    # Area fractions (records is nicer for Markdown)
+    _stats2 = stats2.drop(columns=["Sample"])
+    content.append("### Area Fractions\n")
+    content.append(_stats2.to_markdown(index=False, floatfmt=".4g"))
+    content.append("\n")
+
+    # Per-group descriptive stats
+    _stats = stats.droplevel(0)
+    _stats = _stats.drop(columns="number_of_mtrs", level=1, errors="ignore")
+
+    for col in np.unique([n[0] for n in stats.columns]):
+        content.append(f"### {col}\n")
+        content.append(_stats[col].to_markdown(index=True, floatfmt=".4g"))
+        content.append("\n")
+
+    with open(output_path, "w") as f:
+        f.write("\n".join(content))
 
 
 def array2rgb(arr, cmap="jet", vmin=0, vmax=1, nan_color="k"):

@@ -22,7 +22,7 @@ def main():
     render_template(args.pipeline_template, vars(args), args.json_path)
 
     if not args.no_runner and args.pipeline_runner:
-        run_pipeline(args.json_path, runner_path=args.pipeline_runner)
+        run_pipeline(args.json_path, runner_path=args.pipeline_runner, verbose=args.verbose)
 
     if not args.no_analysis:
 
@@ -56,7 +56,7 @@ def render_template(template_name: str, context: dict, json_path: str) -> dict:
     print(f"Generated JSON input file: {json_path}")
 
 
-def run_pipeline(json_path: str, runner_path: str):
+def run_pipeline(json_path: str, runner_path: str, verbose: bool = False):
     """Run the DREAM3D PipelineRunner with the given JSON input file"""
 
     if not os.path.isfile(runner_path):
@@ -65,14 +65,17 @@ def run_pipeline(json_path: str, runner_path: str):
         raise FileNotFoundError(f"JSON input file not found or invalid: {json_path}")
 
     cmd = [runner_path, "-p", json_path]
-    status = subprocess.run(cmd, capture_output=True)
+    status = subprocess.run(cmd, capture_output=not verbose)
 
     if status.returncode == 0:
         print(f"PipelineRunner executed successfully for: {json_path}")
     else:
-        raise RuntimeError(f"PipelineRunner failed for: {json_path}\n"
-                           f"STDOUT:\n{status.stdout.decode()}\n"
-                           f"STDERR:\n{status.stderr.decode()}")
+        if not verbose:
+            print("PipelineRunner STDOUT:")
+            print(status.stdout)
+            print("PipelineRunner STDERR:")
+            print(status.stderr)
+        raise RuntimeError(f"PipelineRunner failed for: {json_path}")
 
 
 def parse_args() -> Namespace:

@@ -126,6 +126,13 @@ def test_run_pipeline_success(temp_dir):
             [runner_path, "-p", json_file], capture_output=True
         )
 
+    with patch("subprocess.run") as mock_run:
+        mock_run.return_value = MagicMock(returncode=0, stdout=b"", stderr=b"")
+        run_pipeline(json_file, runner_path, verbose=True)
+        mock_run.assert_called_once_with(
+            [runner_path, "-p", json_file], capture_output=False
+        )
+
 
 def test_run_pipeline_runner_not_found(temp_dir):
 

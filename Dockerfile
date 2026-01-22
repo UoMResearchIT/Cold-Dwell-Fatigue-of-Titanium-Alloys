@@ -33,6 +33,8 @@ RUN apt-get update && apt-get install -y \
 ENV LD_LIBRARY_PATH=/opt/dream3d/lib
 ENV QT_PLUGIN_PATH=/opt/dream3d/Plugins
 ENV QT_QPA_PLATFORM_PLUGIN_PATH=/opt/dream3d/Plugins/platforms
+
+RUN mkdir -p /tmp/runtime-root && chmod 0700 /tmp/runtime-root
 ENV XDG_RUNTIME_DIR=/tmp/runtime-root
 
 ENV PATH="/opt/dream3d/bin:${PATH}"

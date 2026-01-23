@@ -1,10 +1,12 @@
 name: Publish the GUI/CLI Docker Images
 
 on:
-  workflow_run:
-    workflows: ["pytest"]
-    types:
-      - completed
+  release:
+    types: [published]
+  push:
+    tags:
+      - 'v*.*.*-gui'
+      - 'v*.*.*-cli'
 
 env:
   REGISTRY: ghcr.io
@@ -13,7 +15,6 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.conclusion == 'success'
 
     permissions:
       contents: read
@@ -21,22 +22,50 @@ jobs:
       attestations: write
       id-token: write
 
-    strategy:
-      matrix:
-        include:
-          - branch: main
-            target: gui
-            tag-prefix: gui
-          - branch: cli
-            target: base
-            tag-prefix: cli
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Verify version matches release tag
+        run: |
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          PYPROJECT_VERSION=$(grep '^version = ' pyproject.toml | cut -d'"' -f2)
+          if [ "$TAG_VERSION" != "$PYPROJECT_VERSION" ]; then
+            echo "Version mismatch! Release tag: v$TAG_VERSION, pyproject.toml: $PYPROJECT_VERSION"
+            echo "Please update pyproject.toml version to match the release tag."
+            exit 1
+          fi
+
+          SUFFIX=${GITHUB_REF##*-}
+          if [ "${{ github.event_name }}" = "release" ]; then
+            BRANCH="${{ github.event.release.target_commitish }}"
+          else
+            BRANCH="${{ github.ref_name }}"
+          fi
+
+          if [ "$SUFFIX" = "gui" ]; then
+            if [[ "$BRANCH" = "main" || "$BRANCH" == *"gui"* ]]; then
+                TARGET="gui"
+            else
+                echo "GUI tag must target 'main' or a branch containing 'gui', got: $BRANCH"
+                exit 1
+            fi
+          elif [ "$SUFFIX" = "cli" ]; then
+            if [[ "$BRANCH" == *"cli"* ]]; then
+                TARGET="base"
+            else
+                echo "CLI tag must target a branch containing 'cli', got: $BRANCH"
+                exit 1
+            fi
+          else
+            echo "Invalid tag suffix: $SUFFIX"
+            exit 1
+          fi
+          echo "TARGET=$TARGET" >> $GITHUB_ENV
+          echo "Version check passed: $TAG_VERSION"
+
       - name: Log in to the Container registry
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -44,21 +73,19 @@ jobs:
 
       - name: Extract metadata
         id: meta
-        if: github.ref_name == matrix.branch
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=${{ matrix.tag-prefix }}-latest
-            type=sha,prefix=${{ matrix.tag-prefix }}-
+            type=raw,value=${{ env.TARGET }}-latest
+            type=ref,event=tag
 
       - name: Build and push image
-        if: github.ref_name == matrix.branch
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: Dockerfile
-          target: ${{ matrix.target }}
+          target: ${{ env.TARGET }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

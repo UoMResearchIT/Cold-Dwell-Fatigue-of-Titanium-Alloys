@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys/branch/main/graph/badge.svg)](https://codecov.io/gh/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys/branch/main)
+
 # Cold Dwell Fatigue of Titanium Alloys: History, Current State, and Aviation Industry Perspective [Supporting Software]
 
 This is an unofficial "fork" of the package cited below, modified for headless execution on a Docker (Linux) environment.

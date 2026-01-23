@@ -1,11 +1,6 @@
 name: pytest
 
-on:
-  push:
-    branches:
-      - main
-      - cli
-      - troubleshot-ci
+on: [push, pull_request]
 
 jobs:
   test:

@@ -1,4 +1,5 @@
-[![codecov](https://codecov.io/gh/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys/branch/main/graph/badge.svg)](https://codecov.io/gh/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys/branch/main)
+[![tests](https://github.com/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys/actions/workflows/pytest.yml/badge.svg?branch=main)](https://github.com/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys/actions/workflows/pytest.yml)
+[![codecov.io](https://codecov.io/github/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys/coverage.svg)](https://codecov.io/github/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys)
 
 # Cold Dwell Fatigue of Titanium Alloys: History, Current State, and Aviation Industry Perspective [Supporting Software]
 

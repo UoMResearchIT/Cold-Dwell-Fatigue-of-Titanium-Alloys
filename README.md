@@ -1,5 +1,5 @@
-[![tests](https://github.com/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys/actions/workflows/pytest.yml/badge.svg?branch=main)](https://github.com/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys/actions/workflows/pytest.yml)
-[![codecov.io](https://codecov.io/github/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys/coverage.svg)](https://codecov.io/github/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys)
+[![tests](https://github.com/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys/actions/workflows/pytest.yml/badge.svg?branch=cli)](https://github.com/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys/actions/workflows/pytest.yml)
+[![codecov.io](https://codecov.io/github/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys/coverage.svg?branch=cli)](https://codecov.io/github/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys?branch=cli)
 
 # Cold Dwell Fatigue of Titanium Alloys: History, Current State, and Aviation Industry Perspective [Supporting Software]
 
@@ -100,3 +100,4 @@ uv run python -m microtexture -h
 
 - Support for multiple files in command line interface
 - Unit tests
+

@@ -84,12 +84,14 @@ def test_analysis(reference_results, analysis_results):
         output_dir=analysis_results,
         stress_axis=ARGS["stress_axis"],
         min_mtr_size=ARGS["min_mtr_size"],
+        summary_format=["excel", "markdown", "json"],
     )
 
     expected_files = [
         "Individual_MTRs.png",
         "Microtexture_Statistics_Summary.xlsx",
         "Microtexture_Statistics_Summary.md",
+        "Microtexture_Statistics_Summary.json",
     ]
     for axis in ["X", "Y", "Z"]:
         expected_files.extend(

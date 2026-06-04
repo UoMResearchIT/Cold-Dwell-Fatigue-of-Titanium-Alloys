@@ -33,6 +33,7 @@ def main():
             output_dir=args.output_dir,
             stress_axis=args.stress_axis,
             min_mtr_size=args.min_mtr_size,
+            summary_format=args.summary_format,
         )
 
 
@@ -104,6 +105,14 @@ def parse_args() -> Namespace:
         default=cfg["output-dir"],
         help="Results (sub)directory ['%(default)s']. {basename} will be replaced by "
         "the input file name without extension.",
+    )
+    p.add_argument(
+        "--summary-format",
+        choices=["excel", "markdown", "json"],
+        action="append",
+        nargs="*",
+        default=cfg["summary-format"],
+        help="Format for summary output file ['%(default)s']",
     )
     p.add_argument(
         "-n",

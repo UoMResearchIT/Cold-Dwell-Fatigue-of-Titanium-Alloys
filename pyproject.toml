@@ -41,4 +41,7 @@ dev = [
 [tool.setuptools.package-data]
 microtexture = ["sample_data/*.ang"]
 
+[project.scripts]
+microtexture = "microtexture.cli:main"
+
 # System dependencies: DREAM3D-6.5.171 must be installed (see Dockerfile)

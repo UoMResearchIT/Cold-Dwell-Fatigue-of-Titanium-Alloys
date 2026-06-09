@@ -6,8 +6,9 @@
 This is an unofficial "fork" of the package cited below, modified for headless execution on a Docker (Linux) environment.
 See [Change Log](#change-log) for details about the current status and important modifications.
 
-> [!CAUTION]
-> This branch is a stripped-down version intended for command-line execution **only**. Use the `legacy` branch to access the original GUI-based implementation.
+> [!IMPORTANT]
+> - This is a stripped-down version of the original code, intended for command-line execution only. Use the `legacy` branch for the GUI-based implementation.
+> - DREAM.3D 6.5 is considered legacy, and no longer maintained. Consider using the (experimental) `simplnx` branch.
 
 
 #### LICENSE: (?) Ask the original authors.
@@ -68,6 +69,12 @@ uv run python -m microtexture -h
 ```
 
 ## Change Log
+
+### v0.4.0 (2026-06)
+
+- JSON summary output
+- Basic regression/postprocessing tests
+- Docker image builds on ghcr.io/uomresearchit/dream3d:6.5.171 (DREAM3D 6.5.x no longer available for download)
 
 ### v0.3.0 (2026-01)
 

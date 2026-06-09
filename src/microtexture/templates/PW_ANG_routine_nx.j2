@@ -1,0 +1,892 @@
+{
+    "isDisabled": false,
+    "name": "PW_ANG_routine_v65_nx",
+    "pinnedParams": [],
+    "pipeline": [
+        {
+            "args": {
+                "cell_attribute_matrix_name": {"value": "CellData", "version": 1},
+                "cell_ensemble_attribute_matrix_name": {"value": "CellEnsembleData", "version": 1},
+                "output_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "input_file": {"value": "{{ input_file }}", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "00 Read ANG",
+            "filter": {"name": "nx::core::ReadAngDataFilter", "uuid": "5b062816-79ac-47ce-93cb-e7966896bcbd"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "keep_input_geometry_origin": {"value": false, "version": 1},
+                "output_image_geometry_path": {"value": "", "version": 1},
+                "remove_original_geometry": {"value": true, "version": 1},
+                "rotate_slice_by_slice": {"value": false, "version": 1},
+                "rotation_axis_angle": {"value": [0.0, 1.0, 0.0, 0.0], "version": 1},
+                "rotation_representation_index": {"value": 0, "version": 1},
+                "rotation_matrix": {"value": [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]], "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "01 Rotate Sample Ref Frame",
+            "filter": {"name": "nx::core::RotateSampleRefFrameFilter", "uuid": "d2451dc1-a5a1-4ac2-a64d-7991669dcffc"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "rotation_axis_angle": {"value": [0.0, 0.0, 1.0, 90.0], "version": 1},
+                "euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "02 Rotate Euler Ref Frame (Z 90)",
+            "filter": {"name": "nx::core::RotateEulerRefFrameFilter", "uuid": "0458edcd-3655-4465-adc8-b036d76138b5"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "rotation_axis_angle": {"value": [0.0, 1.0, 0.0, 0.0], "version": 1},
+                "euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "03 Rotate Euler Ref Frame (Y 0)",
+            "filter": {"name": "nx::core::RotateEulerRefFrameFilter", "uuid": "0458edcd-3655-4465-adc8-b036d76138b5"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "rotation_axis_angle": {"value": [1.0, 0.0, 0.0, 0.0], "version": 1},
+                "euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "04 Rotate Euler Ref Frame (X 0)",
+            "filter": {"name": "nx::core::RotateEulerRefFrameFilter", "uuid": "0458edcd-3655-4465-adc8-b036d76138b5"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "cell_ipf_colors_array_name": {"value": "IPF_Raw_Z", "version": 1},
+                "reference_dir": {"value": [0.0, 0.0, 1.0], "version": 1},
+                "use_mask": {"value": false, "version": 1},
+                "mask_array_path": {"value": "", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "05 IPF Raw Z",
+            "filter": {"name": "nx::core::ComputeIPFColorsFilter", "uuid": "64cb4f27-6e5e-4dd2-8a03-0c448cb8f5e6"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "cell_ipf_colors_array_name": {"value": "IPF_Raw_Y", "version": 1},
+                "reference_dir": {"value": [0.0, 1.0, 0.0], "version": 1},
+                "use_mask": {"value": false, "version": 1},
+                "mask_array_path": {"value": "", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "06 IPF Raw Y",
+            "filter": {"name": "nx::core::ComputeIPFColorsFilter", "uuid": "64cb4f27-6e5e-4dd2-8a03-0c448cb8f5e6"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "cell_ipf_colors_array_name": {"value": "IPF_Raw_X", "version": 1},
+                "reference_dir": {"value": [1.0, 0.0, 0.0], "version": 1},
+                "use_mask": {"value": false, "version": 1},
+                "mask_array_path": {"value": "", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "07 IPF Raw X",
+            "filter": {"name": "nx::core::ComputeIPFColorsFilter", "uuid": "64cb4f27-6e5e-4dd2-8a03-0c448cb8f5e6"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "array_thresholds_object": {
+                    "value": {
+                        "inverted": false,
+                        "thresholds": [
+                            {
+                                "array_path": "ImageDataContainer/CellData/Confidence Index",
+                                "comparison": 0,
+                                "component_index": 0,
+                                "inverted": false,
+                                "type": "array",
+                                "union": 0,
+                                "value": {{ ci_mask_threshold }}
+                            },
+                            {
+                                "array_path": "ImageDataContainer/CellData/Image Quality",
+                                "comparison": 0,
+                                "component_index": 0,
+                                "inverted": false,
+                                "type": "array",
+                                "union": 0,
+                                "value": {{ iq_mask_threshold }}
+                            }
+                        ],
+                        "type": "collection",
+                        "union": 0
+                    },
+                    "version": 2
+                },
+                "created_mask_type": {"value": 1, "version": 1},
+                "custom_false_value": {"value": 0.0, "version": 1},
+                "custom_true_value": {"value": 1.0, "version": 1},
+                "output_data_array_name": {"value": "Mask", "version": 1},
+                "use_custom_false_value": {"value": false, "version": 1},
+                "use_custom_true_value": {"value": false, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "08 Threshold (Mask)",
+            "filter": {"name": "nx::core::MultiThresholdObjectsFilter", "uuid": "4246245e-1011-4add-8436-0af6bed19228"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "title": {"value": "Thresholded Pole Figure", "version": 1},
+                "generation_algorithm_index": {"value": 0, "version": 1},
+                "lambert_size": {"value": 64, "version": 1},
+                "num_colors": {"value": 32, "version": 1},
+                "image_layout_index": {"value": 2, "version": 1},
+                "output_path": {"value": "{{ output_dir }}/PoleFigures", "version": 1},
+                "image_prefix": {"value": "Thresholded_Pole_Figure_Phase_", "version": 1},
+                "image_size": {"value": 256, "version": 1},
+                "use_mask": {"value": true, "version": 1},
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/Mask", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "material_name_array_path": {"value": "ImageDataContainer/CellEnsembleData/MaterialName", "version": 1},
+                "save_as_image_geometry": {"value": false, "version": 1},
+                "write_image_to_disk": {"value": true, "version": 1},
+                "output_image_geometry_path": {"value": "PoleFigureGeometry", "version": 1},
+                "save_intensity_plots": {"value": false, "version": 1},
+                "normalize_to_mrd": {"value": false, "version": 1},
+                "intensity_geometry_path": {"value": "IntensityGeometry", "version": 1},
+                "intensity_plot_1_name": {"value": "IntensityPlot1", "version": 1},
+                "intensity_plot_2_name": {"value": "IntensityPlot2", "version": 1},
+                "intensity_plot_3_name": {"value": "IntensityPlot3", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "09 Pole Figure (Thresholded)",
+            "filter": {"name": "nx::core::WritePoleFigureFilter", "uuid": "00cbb97e-a5c2-43e6-9a35-17a0f9ce26ed"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "input_orientation_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "input_representation_index": {"value": 0, "version": 1},
+                "output_orientation_array_name": {"value": "Quats", "version": 1},
+                "output_representation_index": {"value": 2, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "10 Euler -> Quaternions",
+            "filter": {"name": "nx::core::ConvertOrientationsFilter", "uuid": "501e54e6-a66f-4eeb-ae37-00e649c00d4b"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "quats_array_path": {"value": "ImageDataContainer/CellData/Quats", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "c_axis_locations_array_name": {"value": "Raw_CAxes", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "11 Find C-Axis Locations",
+            "filter": {"name": "nx::core::ComputeCAxisLocationsFilter", "uuid": "a51c257a-ddc1-499a-9b21-f2d25a19d098"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "misorientation_tolerance": {"value": 5.0, "version": 1},
+                "number_of_neighbors": {"value": 3, "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "quats_array_path": {"value": "ImageDataContainer/CellData/Quats", "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/Mask", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "12 Bad Data Neighbor Orientation Check",
+            "filter": {"name": "nx::core::BadDataNeighborOrientationCheckFilter", "uuid": "3f342977-aea1-49e1-a9c2-f73760eba0d3"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "comparison_data_path": {"value": "ImageDataContainer/CellData/Confidence Index", "version": 1},
+                "comparison_index": {"value": 0, "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "loop": {"value": false, "version": 1},
+                "min_confidence": {"value": {{ ci_primary_threshold }}, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "13 Replace Attributes (Primary CI)",
+            "filter": {"name": "nx::core::ReplaceElementAttributesWithNeighborValuesFilter", "uuid": "65128c53-d3be-4a69-a559-32a48d603884"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "min_confidence": {"value": {{ ci_secondary_threshold }}, "version": 1},
+                "misorientation_tolerance": {"value": 5.0, "version": 1},
+                "level": {"value": 3, "version": 1},
+                "correlation_array_path": {"value": "ImageDataContainer/CellData/Confidence Index", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "quats_array_path": {"value": "ImageDataContainer/CellData/Quats", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "ignored_data_array_paths": {"value": [], "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "14 Neighbor Orientation Correlation (Secondary CI)",
+            "filter": {"name": "nx::core::NeighborOrientationCorrelationFilter", "uuid": "4625c192-7e46-4333-a294-67a2eb64cb37"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "fill_holes": {"value": false, "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/Mask", "version": 1},
+                "slice_by_slice": {"value": false, "version": 1},
+                "slice_by_slice_plane_index": {"value": 0, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "15 Identify Sample",
+            "filter": {"name": "nx::core::IdentifySampleFilter", "uuid": "94d47495-5a89-4c7f-a0ee-5ff20e6bd273"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "existing_data_path": {"value": ["ImageDataContainer/CellEnsembleData/CrystalStructures"], "version": 1},
+                "new_data_path": {"value": "CrystalStructures_backup", "version": 1},
+                "new_path_suffix": {"value": "_backup", "version": 1},
+                "parameters_version": 1,
+                "use_new_parent": {"value": false, "version": 1}
+            },
+            "comments": "16a Backup CrystalStructures",
+            "filter": {"name": "nx::core::CopyDataObjectFilter", "uuid": "ac8d51d8-9167-5628-a060-95a8863a76b1"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "component_count": {"value": 1, "version": 1},
+                "data_format": {"value": "", "version": 1},
+                "initialization_value_str": {"value": "0", "version": 1},
+                "numeric_type_index": {"value": 5, "version": 1},
+                "output_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures_new", "version": 1},
+                "parameters_version": 1,
+                "set_tuple_dimensions": {"value": false, "version": 1}
+            },
+            "comments": "16b Create all-Hexagonal(0) CrystalStructures",
+            "filter": {"name": "nx::core::CreateDataArrayFilter", "uuid": "67041f9b-bdc6-4122-acc6-c9fe9280e90d"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "removed_data_path": {"value": ["ImageDataContainer/CellEnsembleData/CrystalStructures"], "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "16c Delete original CrystalStructures",
+            "filter": {"name": "nx::core::DeleteDataFilter", "uuid": "bf286740-e987-49fe-a7c8-6e566e3a0606"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "allow_overwrite": {"value": false, "version": 1},
+                "new_name": {"value": "CrystalStructures", "version": 1},
+                "parameters_version": 1,
+                "source_data_object_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures_new", "version": 1}
+            },
+            "comments": "16d Rename new array to CrystalStructures",
+            "filter": {"name": "nx::core::RenameDataObjectFilter", "uuid": "911a3aa9-d3c2-4f66-9451-8861c4b726d5"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "misorientation_tolerance": {"value": {{ caxis_misalignment }}, "version": 1},
+                "use_mask": {"value": true, "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/Mask", "version": 1},
+                "quats_array_path": {"value": "ImageDataContainer/CellData/Quats", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "feature_ids_array_name": {"value": "MTRIds", "version": 1},
+                "cell_feature_attribute_matrix_name": {"value": "CellFeatureData", "version": 1},
+                "active_array_name": {"value": "Active", "version": 1},
+                "randomize_feature_ids": {"value": false, "version": 1},
+                "neighbor_scheme_index": {"value": 0, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "16e Segment Features C-Axis",
+            "filter": {"name": "nx::core::CAxisSegmentFeaturesFilter", "uuid": "9fe07e17-aef1-4bf1-834c-d3a73dafc27d"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "removed_data_path": {"value": ["ImageDataContainer/CellEnsembleData/CrystalStructures"], "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "16f Delete modified CrystalStructures",
+            "filter": {"name": "nx::core::DeleteDataFilter", "uuid": "bf286740-e987-49fe-a7c8-6e566e3a0606"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "allow_overwrite": {"value": false, "version": 1},
+                "new_name": {"value": "CrystalStructures", "version": 1},
+                "parameters_version": 1,
+                "source_data_object_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures_backup", "version": 1}
+            },
+            "comments": "16g Restore CrystalStructures (rename backup)",
+            "filter": {"name": "nx::core::RenameDataObjectFilter", "uuid": "911a3aa9-d3c2-4f66-9451-8861c4b726d5"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "feature_ids_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "cell_features_attribute_matrix_path": {"value": "ImageDataContainer/CellFeatureData", "version": 1},
+                "feature_phases_array_name": {"value": "Phases", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "23 Feature Phases",
+            "filter": {"name": "nx::core::ComputeFeaturePhasesFilter", "uuid": "da5bb20e-4a8e-49d9-9434-fbab7bc434fc"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_feature_ids_array_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "cell_quats_array_path": {"value": "ImageDataContainer/CellData/Quats", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "cell_feature_attribute_matrix_path": {"value": "ImageDataContainer/CellFeatureData", "version": 1},
+                "avg_euler_angles_array_name": {"value": "AvgEulerAngles", "version": 1},
+                "avg_quats_array_name": {"value": "AvgQuats", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "24 Average Orientations",
+            "filter": {"name": "nx::core::ComputeAvgOrientationsFilter", "uuid": "086ddb9a-928f-46ab-bad6-b1498270d71e"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "centroids_array_name": {"value": "Centroids", "version": 1},
+                "feature_attribute_matrix_path": {"value": "ImageDataContainer/CellFeatureData", "version": 1},
+                "feature_ids_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "is_periodic": {"value": false, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "25 Feature Centroids",
+            "filter": {"name": "nx::core::ComputeFeatureCentroidsFilter", "uuid": "c6875ac7-8bdd-4f69-b6ce-82ac09bd3421"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "boundary_cells_name": {"value": "BoundaryCells", "version": 1},
+                "cell_feature_array_path": {"value": "ImageDataContainer/CellFeatureData", "version": 1},
+                "feature_ids_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "neighbor_list_name": {"value": "NeighborList", "version": 1},
+                "number_of_neighbors_name": {"value": "NumNeighbors", "version": 1},
+                "shared_surface_area_list_name": {"value": "SharedSurfaceAreaList", "version": 1},
+                "store_boundary_cells": {"value": false, "version": 1},
+                "store_surface_features": {"value": false, "version": 1},
+                "surface_features_name": {"value": "SurfaceFeatures", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "26 Feature Neighbors",
+            "filter": {"name": "nx::core::ComputeFeatureNeighborsFilter", "uuid": "7177e88c-c3ab-4169-abe9-1fdaff20e598"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "apply_to_single_phase": {"value": false, "version": 1},
+                "feature_ids_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "feature_phases_path": {"value": "ImageDataContainer/CellFeatureData/Phases", "version": 1},
+                "ignored_voxel_arrays": {"value": [], "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "min_num_neighbors": {"value": 4, "version": 1},
+                "num_neighbors_path": {"value": "ImageDataContainer/CellFeatureData/NumNeighbors", "version": 1},
+                "phase_number": {"value": 0, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "27 Minimum Neighbors",
+            "filter": {"name": "nx::core::RequireMinNumNeighborsFilter", "uuid": "4ab5153f-6014-4e6d-bbd6-194068620389"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "feature_ids_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "ignored_data_array_paths": {"value": [], "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "num_iterations": {"value": 2, "version": 1},
+                "operation_index": {"value": 1, "version": 1},
+                "x_dir_on": {"value": true, "version": 1},
+                "y_dir_on": {"value": true, "version": 1},
+                "z_dir_on": {"value": true, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "28 Dilate Bad Data",
+            "filter": {"name": "nx::core::ErodeDilateBadDataFilter", "uuid": "7f2f7378-580e-4337-8c04-a29e7883db0b"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "feature_ids_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "ignored_data_array_paths": {"value": [], "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "num_iterations": {"value": 2, "version": 1},
+                "operation_index": {"value": 0, "version": 1},
+                "x_dir_on": {"value": true, "version": 1},
+                "y_dir_on": {"value": true, "version": 1},
+                "z_dir_on": {"value": true, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "29 Erode Bad Data",
+            "filter": {"name": "nx::core::ErodeDilateBadDataFilter", "uuid": "7f2f7378-580e-4337-8c04-a29e7883db0b"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "feature_ids_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "ignored_data_array_paths": {"value": [], "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "min_allowed_defect_size": {"value": 1000, "version": 1},
+                "store_as_new_phase": {"value": false, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "30 Fill Bad Data",
+            "filter": {"name": "nx::core::FillBadDataFilter", "uuid": "a59eb864-9e6b-40bb-9292-e5281b0b4f3e"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "equivalent_diameters_name": {"value": "EquivalentDiameters", "version": 1},
+                "feature_attribute_matrix_path": {"value": "ImageDataContainer/CellFeatureData", "version": 1},
+                "feature_ids_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "num_elements_name": {"value": "NumCells", "version": 1},
+                "save_element_sizes": {"value": false, "version": 1},
+                "volumes_name": {"value": "volume_map", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "31 Feature Sizes",
+            "filter": {"name": "nx::core::ComputeFeatureSizesFilter", "uuid": "c666ee17-ca58-4969-80d0-819986c72485"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "created_array_suffix": {"value": "", "version": 1},
+                "feature_ids_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "selected_feature_array_paths": {"value": ["ImageDataContainer/CellFeatureData/AvgEulerAngles"], "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "32 Copy AvgEuler to cell",
+            "filter": {"name": "nx::core::CopyFeatureArrayToElementArrayFilter", "uuid": "4c8c976a-993d-438b-bd8e-99f71114b9a1"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "quats_array_path": {"value": "ImageDataContainer/CellData/Quats", "version": 1},
+                "feature_ids_array_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "cell_feature_attribute_matrix_path": {"value": "ImageDataContainer/CellFeatureData", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "avg_c_axes_array_name": {"value": "AvgCAxes", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "33 Average C-Axes",
+            "filter": {"name": "nx::core::ComputeAvgCAxesFilter", "uuid": "453cdb58-7bbb-4576-ad5e-f75a1c54d348"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "created_array_suffix": {"value": "", "version": 1},
+                "feature_ids_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "selected_feature_array_paths": {"value": ["ImageDataContainer/CellFeatureData/AvgCAxes"], "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "34 Copy AvgCAxes to cell",
+            "filter": {"name": "nx::core::CopyFeatureArrayToElementArrayFilter", "uuid": "4c8c976a-993d-438b-bd8e-99f71114b9a1"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "feature_ids_array_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "quats_array_path": {"value": "ImageDataContainer/CellData/Quats", "version": 1},
+                "avg_c_axes_array_path": {"value": "ImageDataContainer/CellFeatureData/AvgCAxes", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "feature_avg_c_axis_misorientations_array_name": {"value": "FeatureAvgCAxisMisorientations", "version": 1},
+                "feature_stdev_c_axis_misorientations_array_name": {"value": "FeatureStdevCAxisMisorientations", "version": 1},
+                "feature_reference_c_axis_misorientations_array_name": {"value": "FeatureReferenceCAxisMisorientations", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "35 Feature Reference C-Axis Misorientations",
+            "filter": {"name": "nx::core::ComputeFeatureReferenceCAxisMisorientationsFilter", "uuid": "16c487d2-8f99-4fb5-a4df-d3f70a8e6b25"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "cell_ipf_colors_array_name": {"value": "IPF_Cleaned_Z", "version": 1},
+                "reference_dir": {"value": [0.0, 0.0, 1.0], "version": 1},
+                "use_mask": {"value": true, "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/Mask", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "36 IPF Cleaned Z",
+            "filter": {"name": "nx::core::ComputeIPFColorsFilter", "uuid": "64cb4f27-6e5e-4dd2-8a03-0c448cb8f5e6"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "cell_ipf_colors_array_name": {"value": "IPF_Cleaned_Y", "version": 1},
+                "reference_dir": {"value": [0.0, 1.0, 0.0], "version": 1},
+                "use_mask": {"value": true, "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/Mask", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "37 IPF Cleaned Y",
+            "filter": {"name": "nx::core::ComputeIPFColorsFilter", "uuid": "64cb4f27-6e5e-4dd2-8a03-0c448cb8f5e6"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "cell_ipf_colors_array_name": {"value": "IPF_Cleaned_X", "version": 1},
+                "reference_dir": {"value": [1.0, 0.0, 0.0], "version": 1},
+                "use_mask": {"value": true, "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/Mask", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "38 IPF Cleaned X",
+            "filter": {"name": "nx::core::ComputeIPFColorsFilter", "uuid": "64cb4f27-6e5e-4dd2-8a03-0c448cb8f5e6"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/AvgEulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "cell_ipf_colors_array_name": {"value": "IPF_Average_Z", "version": 1},
+                "reference_dir": {"value": [0.0, 0.0, 1.0], "version": 1},
+                "use_mask": {"value": true, "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/Mask", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "39 IPF Average Z",
+            "filter": {"name": "nx::core::ComputeIPFColorsFilter", "uuid": "64cb4f27-6e5e-4dd2-8a03-0c448cb8f5e6"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/AvgEulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "cell_ipf_colors_array_name": {"value": "IPF_Average_Y", "version": 1},
+                "reference_dir": {"value": [0.0, 1.0, 0.0], "version": 1},
+                "use_mask": {"value": true, "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/Mask", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "40 IPF Average Y",
+            "filter": {"name": "nx::core::ComputeIPFColorsFilter", "uuid": "64cb4f27-6e5e-4dd2-8a03-0c448cb8f5e6"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/AvgEulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "cell_ipf_colors_array_name": {"value": "IPF_Average_X", "version": 1},
+                "reference_dir": {"value": [1.0, 0.0, 0.0], "version": 1},
+                "use_mask": {"value": true, "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/Mask", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "41 IPF Average X",
+            "filter": {"name": "nx::core::ComputeIPFColorsFilter", "uuid": "64cb4f27-6e5e-4dd2-8a03-0c448cb8f5e6"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "boundary_cells_name": {"value": "BoundaryCells", "version": 1},
+                "cell_feature_array_path": {"value": "ImageDataContainer/CellFeatureData", "version": 1},
+                "feature_ids_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "neighbor_list_name": {"value": "NeighborList2", "version": 1},
+                "number_of_neighbors_name": {"value": "NumNeighbors2", "version": 1},
+                "shared_surface_area_list_name": {"value": "SharedSurfaceAreaList2", "version": 1},
+                "store_boundary_cells": {"value": false, "version": 1},
+                "store_surface_features": {"value": false, "version": 1},
+                "surface_features_name": {"value": "SurfaceFeatures", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "42 Feature Neighbors 2",
+            "filter": {"name": "nx::core::ComputeFeatureNeighborsFilter", "uuid": "7177e88c-c3ab-4169-abe9-1fdaff20e598"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "compute_avg_misors": {"value": false, "version": 1},
+                "neighbor_list_array_path": {"value": "ImageDataContainer/CellFeatureData/NeighborList2", "version": 1},
+                "avg_quats_array_path": {"value": "ImageDataContainer/CellFeatureData/AvgQuats", "version": 1},
+                "feature_phases_array_path": {"value": "ImageDataContainer/CellFeatureData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "misorientation_list_array_name": {"value": "MisorientationList", "version": 1},
+                "avg_misorientations_array_name": {"value": "AvgMisorientations", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "43 Feature Neighbor Misorientations",
+            "filter": {"name": "nx::core::ComputeFeatureNeighborMisorientationsFilter", "uuid": "0b68fe25-b5ef-4805-ae32-20acb8d4e823"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "find_avg_misals": {"value": false, "version": 1},
+                "neighbor_list_array_path": {"value": "ImageDataContainer/CellFeatureData/NeighborList2", "version": 1},
+                "avg_quats_array_path": {"value": "ImageDataContainer/CellFeatureData/AvgQuats", "version": 1},
+                "feature_phases_array_path": {"value": "ImageDataContainer/CellFeatureData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "c_axis_misalignment_list_array_name": {"value": "CAxisMisalignmentList", "version": 1},
+                "avg_c_axis_misalignments_array_name": {"value": "AvgCAxisMisalignments", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "44 Feature Neighbor C-Axis Misalignments",
+            "filter": {"name": "nx::core::ComputeFeatureNeighborCAxisMisalignmentsFilter", "uuid": "636ee030-9f07-4f16-a4f3-592eff8ef1ee"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "created_array_suffix": {"value": "", "version": 1},
+                "feature_ids_path": {"value": "ImageDataContainer/CellData/MTRIds", "version": 1},
+                "selected_feature_array_paths": {"value": ["ImageDataContainer/CellFeatureData/volume_map"], "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "45 Copy Volumes to cell (volume_map)",
+            "filter": {"name": "nx::core::CopyFeatureArrayToElementArrayFilter", "uuid": "4c8c976a-993d-438b-bd8e-99f71114b9a1"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "array_thresholds_object": {
+                    "value": {
+                        "inverted": false,
+                        "thresholds": [
+                            {
+                                "array_path": "ImageDataContainer/CellData/volume_map",
+                                "comparison": 0,
+                                "component_index": 0,
+                                "inverted": false,
+                                "type": "array",
+                                "union": 0,
+                                "value": {{ min_mtr_size }}
+                            }
+                        ],
+                        "type": "collection",
+                        "union": 0
+                    },
+                    "version": 2
+                },
+                "created_mask_type": {"value": 1, "version": 1},
+                "custom_false_value": {"value": 0.0, "version": 1},
+                "custom_true_value": {"value": 1.0, "version": 1},
+                "output_data_array_name": {"value": "MTR_Mask", "version": 1},
+                "use_custom_false_value": {"value": false, "version": 1},
+                "use_custom_true_value": {"value": false, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "46 Threshold MTR_Mask",
+            "filter": {"name": "nx::core::MultiThresholdObjectsFilter", "uuid": "4246245e-1011-4add-8436-0af6bed19228"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "cell_ipf_colors_array_name": {"value": "IPF_MTR_Z", "version": 1},
+                "reference_dir": {"value": [0.0, 0.0, 1.0], "version": 1},
+                "use_mask": {"value": true, "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/MTR_Mask", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "47 IPF MTR Z",
+            "filter": {"name": "nx::core::ComputeIPFColorsFilter", "uuid": "64cb4f27-6e5e-4dd2-8a03-0c448cb8f5e6"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "cell_ipf_colors_array_name": {"value": "IPF_MTR_Y", "version": 1},
+                "reference_dir": {"value": [0.0, 1.0, 0.0], "version": 1},
+                "use_mask": {"value": true, "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/MTR_Mask", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "48 IPF MTR Y",
+            "filter": {"name": "nx::core::ComputeIPFColorsFilter", "uuid": "64cb4f27-6e5e-4dd2-8a03-0c448cb8f5e6"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "cell_ipf_colors_array_name": {"value": "IPF_MTR_X", "version": 1},
+                "reference_dir": {"value": [1.0, 0.0, 0.0], "version": 1},
+                "use_mask": {"value": true, "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/MTR_Mask", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "49 IPF MTR X",
+            "filter": {"name": "nx::core::ComputeIPFColorsFilter", "uuid": "64cb4f27-6e5e-4dd2-8a03-0c448cb8f5e6"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "title": {"value": "Cleaned Pole Figure", "version": 1},
+                "generation_algorithm_index": {"value": 0, "version": 1},
+                "lambert_size": {"value": 64, "version": 1},
+                "num_colors": {"value": 32, "version": 1},
+                "image_layout_index": {"value": 2, "version": 1},
+                "output_path": {"value": "{{ output_dir }}/PoleFigures", "version": 1},
+                "image_prefix": {"value": "Cleaned_Pole_Figure_Phase_", "version": 1},
+                "image_size": {"value": 256, "version": 1},
+                "use_mask": {"value": true, "version": 1},
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/Mask", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "material_name_array_path": {"value": "ImageDataContainer/CellEnsembleData/MaterialName", "version": 1},
+                "save_as_image_geometry": {"value": false, "version": 1},
+                "write_image_to_disk": {"value": true, "version": 1},
+                "output_image_geometry_path": {"value": "PoleFigureGeometry", "version": 1},
+                "save_intensity_plots": {"value": false, "version": 1},
+                "normalize_to_mrd": {"value": false, "version": 1},
+                "intensity_geometry_path": {"value": "IntensityGeometry", "version": 1},
+                "intensity_plot_1_name": {"value": "IntensityPlot1", "version": 1},
+                "intensity_plot_2_name": {"value": "IntensityPlot2", "version": 1},
+                "intensity_plot_3_name": {"value": "IntensityPlot3", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "50 Pole Figure (Cleaned)",
+            "filter": {"name": "nx::core::WritePoleFigureFilter", "uuid": "00cbb97e-a5c2-43e6-9a35-17a0f9ce26ed"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "title": {"value": "MTR-Only Pole Figure", "version": 1},
+                "generation_algorithm_index": {"value": 0, "version": 1},
+                "lambert_size": {"value": 64, "version": 1},
+                "num_colors": {"value": 32, "version": 1},
+                "image_layout_index": {"value": 2, "version": 1},
+                "output_path": {"value": "{{ output_dir }}/PoleFigures", "version": 1},
+                "image_prefix": {"value": "MTR_Pole_Figure_Phase_", "version": 1},
+                "image_size": {"value": 256, "version": 1},
+                "use_mask": {"value": true, "version": 1},
+                "cell_euler_angles_array_path": {"value": "ImageDataContainer/CellData/EulerAngles", "version": 1},
+                "cell_phases_array_path": {"value": "ImageDataContainer/CellData/Phases", "version": 1},
+                "mask_array_path": {"value": "ImageDataContainer/CellData/MTR_Mask", "version": 1},
+                "crystal_structures_array_path": {"value": "ImageDataContainer/CellEnsembleData/CrystalStructures", "version": 1},
+                "material_name_array_path": {"value": "ImageDataContainer/CellEnsembleData/MaterialName", "version": 1},
+                "save_as_image_geometry": {"value": false, "version": 1},
+                "write_image_to_disk": {"value": true, "version": 1},
+                "output_image_geometry_path": {"value": "PoleFigureGeometry2", "version": 1},
+                "save_intensity_plots": {"value": false, "version": 1},
+                "normalize_to_mrd": {"value": false, "version": 1},
+                "intensity_geometry_path": {"value": "IntensityGeometry2", "version": 1},
+                "intensity_plot_1_name": {"value": "IntensityPlot1", "version": 1},
+                "intensity_plot_2_name": {"value": "IntensityPlot2", "version": 1},
+                "intensity_plot_3_name": {"value": "IntensityPlot3", "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "51 Pole Figure (MTR)",
+            "filter": {"name": "nx::core::WritePoleFigureFilter", "uuid": "00cbb97e-a5c2-43e6-9a35-17a0f9ce26ed"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "file_name": {"value": "{{ output_dir }}/{{ basename }}_IPF_Raw_Z.tif", "version": 1},
+                "image_array_path": {"value": "ImageDataContainer/CellData/IPF_Raw_Z", "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "plane_index": {"value": 0, "version": 1},
+                "index_offset": {"value": 0, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "52 Write IPF_Raw_Z.tif",
+            "filter": {"name": "nx::core::ITKImageWriterFilter", "uuid": "a181ee3e-1678-4133-b9c5-a9dd7bfec62f"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "file_name": {"value": "{{ output_dir }}/{{ basename }}_IPF_Cleaned_Z.tif", "version": 1},
+                "image_array_path": {"value": "ImageDataContainer/CellData/IPF_Cleaned_Z", "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "plane_index": {"value": 0, "version": 1},
+                "index_offset": {"value": 0, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "53 Write IPF_Cleaned_Z.tif",
+            "filter": {"name": "nx::core::ITKImageWriterFilter", "uuid": "a181ee3e-1678-4133-b9c5-a9dd7bfec62f"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "file_name": {"value": "{{ output_dir }}/{{ basename }}_IPF_Average_Z.tif", "version": 1},
+                "image_array_path": {"value": "ImageDataContainer/CellData/IPF_Average_Z", "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "plane_index": {"value": 0, "version": 1},
+                "index_offset": {"value": 0, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "54 Write IPF_Average_Z.tif",
+            "filter": {"name": "nx::core::ITKImageWriterFilter", "uuid": "a181ee3e-1678-4133-b9c5-a9dd7bfec62f"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "file_name": {"value": "{{ output_dir }}/{{ basename }}_IPF_MTR_Z.tif", "version": 1},
+                "image_array_path": {"value": "ImageDataContainer/CellData/IPF_MTR_Z", "version": 1},
+                "input_image_geometry_path": {"value": "ImageDataContainer", "version": 1},
+                "plane_index": {"value": 0, "version": 1},
+                "index_offset": {"value": 0, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "55 Write IPF_MTR_Z.tif",
+            "filter": {"name": "nx::core::ITKImageWriterFilter", "uuid": "a181ee3e-1678-4133-b9c5-a9dd7bfec62f"},
+            "isDisabled": false
+        },
+        {
+            "args": {
+                "export_file_path": {"value": "{{ output_dir }}/{{ basename }}.dream3d", "version": 1},
+                "write_xdmf_file": {"value": true, "version": 1},
+                "parameters_version": 1
+            },
+            "comments": "56 Write .dream3d",
+            "filter": {"name": "nx::core::WriteDREAM3DFilter", "uuid": "b3a95784-2ced-41ec-8d3d-0242ac130003"},
+            "isDisabled": false
+        }
+    ],
+    "version": 1,
+    "workflowParams": []
+}

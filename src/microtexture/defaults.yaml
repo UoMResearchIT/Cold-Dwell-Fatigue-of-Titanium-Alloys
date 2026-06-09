@@ -35,10 +35,13 @@ bc-secondary-threshold: 50
 
 # DREAM3D execution ---
 
-# Path to DREAM3D PipelineRunner, override with $DREAM3D-PIPELINE-RUNNER
-pipeline-runner: "/opt/dream3d/bin/PipelineRunner"
+# Path to DREAM3D PipelineRunner or SIMPLNX nxrunner
+# (absolute path, or executable in the system PATH, override with $DREAM3D-PIPELINE-RUNNER)
+pipeline-runner: "nxrunner"
 
 # Path to DREAM3D pipeline template, override with $DREAM3D-PIPELINE-TEMPLATE
+# tokens allow automatic selection based on input file extension pipeline-runner.
 # {EXT} / {ext} tokens will be replaced by the (upper / lower case) input file extension.
+# {suffix} will be "nx.d3dpipeline" or "v65.json" depending on the pipeline-runner.
 # {microtexture} stands for the path to this package.
-pipeline-template: "{microtexture}/templates/PW_{EXT}_routine_v65.j2"
+pipeline-template: "{microtexture}/templates/PW_{EXT}_routine_{suffix}.j2"

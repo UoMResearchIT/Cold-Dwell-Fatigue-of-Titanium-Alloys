@@ -121,16 +121,16 @@ def test_run_pipeline_success(temp_dir):
 
     with patch("subprocess.run") as mock_run:
         mock_run.return_value = MagicMock(returncode=0, stdout=b"", stderr=b"")
-        run_pipeline(json_file, runner_path)
+        run_pipeline("PipelineRunner", json_file, runner_path)
         mock_run.assert_called_once_with(
             [runner_path, "-p", json_file], capture_output=True
         )
 
     with patch("subprocess.run") as mock_run:
         mock_run.return_value = MagicMock(returncode=0, stdout=b"", stderr=b"")
-        run_pipeline(json_file, runner_path, verbose=True)
+        run_pipeline("nxrunner", json_file, runner_path, verbose=True)
         mock_run.assert_called_once_with(
-            [runner_path, "-p", json_file], capture_output=False
+            [runner_path, "--execute", json_file], capture_output=False
         )
 
 
@@ -142,7 +142,7 @@ def test_run_pipeline_runner_not_found(temp_dir):
     runner_path = "/nonexistent/PipelineRunner"
 
     with pytest.raises(FileNotFoundError):
-        run_pipeline(json_file, runner_path)
+        run_pipeline("PipelineRunner", json_file, runner_path)
 
 
 def test_run_pipeline_json_not_found(temp_dir):
@@ -153,7 +153,7 @@ def test_run_pipeline_json_not_found(temp_dir):
     runner_path = "/fake/PipelineRunner"
 
     with pytest.raises(FileNotFoundError):
-        run_pipeline(json_file, runner_path)
+        run_pipeline("PipelineRunner", json_file, runner_path)
 
 
 def test_run_pipeline_failure(temp_dir):
@@ -170,4 +170,4 @@ def test_run_pipeline_failure(temp_dir):
     with patch("subprocess.run") as mock_run:
         mock_run.return_value = MagicMock(returncode=1, stdout=b"out", stderr=b"err")
         with pytest.raises(RuntimeError):
-            run_pipeline(json_file, runner_path)
+            run_pipeline("PipelineRunner", json_file, runner_path)

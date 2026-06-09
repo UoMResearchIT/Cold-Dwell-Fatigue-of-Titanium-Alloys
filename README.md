@@ -7,8 +7,20 @@ This is an unofficial "fork" of the package cited below, modified for headless e
 See [Change Log](#change-log) for details about the current status and important modifications.
 
 > [!IMPORTANT]
-> - This is a stripped-down version of the original code, intended for command-line execution only. Use the `legacy` branch for the GUI-based implementation.
-> - DREAM.3D 6.5 is considered legacy, and no longer maintained. Consider using the (experimental) `simplnx` branch.
+> This branch is an experimental rewrite of the original code, to go around the fact that 
+> DREAM3D 6.5 is no longer maintained.
+>
+> The `nxrunner` pipeline templates are **AI translations** of the originals, and differ in some
+> [particulars](#differences-between-dream3d-65-and-simplnx-pipelines).
+> We have run a batch of [regression tests](#testing) that suggest the pipelines are equivalent
+> within reasonable tolerances, but we strongly encourage you to do the same with your own data
+> before using this version.
+
+## TODOS
+
+- Regression tests have not yet covered a case where "Pixel Fraction Altered By Cleanup" > 0. This might be a reporting artifact, a matter of adjusting the test `ARGS`, or we might just need sufficiently "dirty" data.
+
+- If we're already moving to SIMPLNX, pipelines might be clearer and more maintainable if written as [python scripts](https://www.dream3d.io/python_docs/Tutorial_2.html) instead of `.d3dpipeline` Jinja templates. 
 
 
 #### LICENSE: (?) Ask the original authors.
@@ -37,7 +49,7 @@ Published Date : 2024-11-13
 > This tool has been publicly released (AFRL-2024-4080)
 
 
-## Usage
+## Installation
 
 Clone this repository:
 ```sh
@@ -45,48 +57,120 @@ git clone https://github.com/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys
 cd ./microtexture
 ```
 
-#### Using [Docker](https://docs.docker.com/engine/install/) (recommended)
+#### Using [pixi](https://pixi.prefix.dev/)
 
 ```sh
-docker buildx build . -t microtexture:latest
-docker run --rm microtexture:latest --help
-docker run --rm -v /path/to/my/data:/data microtexture:latest [OPTIONS] FILE
+pixi install && pixi run setup-plugins
+pixi shell
+microtexture --help
 ```
 
-To run the DREAM3D GUI (e.g. for development of new pipelines):
+> [!NOTE]
+> `scripts/setup-plugins.sh` adds symlinks for `.simplnx` plugins, which `nxrunner` otherwise has problems finding.
+
+#### Using conda / mamba
+
 ```sh
-docker compose -f docker-compose-dream3d-gui.yaml up --build
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+conda create -n nxpython python=3.12
+conda activate nxpython
+conda install -c bluequartzsoftware dream3dnx
+pip install -e .
+bash scripts/setup-plugins.sh
+microtexture --help
 ```
 
-To run tests:
+#### Using [Docker](https://docs.docker.com/engine/install/)
+
+The provided Dockerifile contains both the legacy DREAM3D 6.5.171 `PipelineRunner`, as well as the new `nxrunner`
+
+```sh
+docker buildx build . -t microtexture:simplnx
+docker run --rm microtexture:simplnx --help
+docker run --rm -v /path/to/my/data:/data microtexture:simplnx [OPTIONS] FILE
+```
+
+## Testing
+
+> [!NOTE]
+> Regression tests require `docker` to generate reference results using the "legacy" [v0.3.0-cli](https://github.com/UoMResearchIT/Cold-Dwell-Fatigue-of-Titanium-Alloys/tree/v0.3.0-cli) version. They will be skipped if Docker is not available.
+
+The tests are parametrized, and will pick up any `*.ang` and/or `*.ctf` files you drop on the `sample_data` directory. 
+Results will become available for inspection on `src/microtexture/tests/.cache`.
+You might have to tweak the default test `ARGS` to match your data -- `min_mtr_size` in particular seems to have a very strong effect on  metrics
+(if not enough MTRs are found, statistics become unstable).
+
+Install additional `dev` dependencies, and run tests using `pytest`, e.g.:
+
+```sh
+pixi install -e dev && pixi run -e dev setup-plugins
+pixi run -e dev pytest -q
+```
+
+Or using Docker:
 ```sh
 docker compose -f docker-compose-test.yaml up
 ```
 
-> [!TIP]
-> Regression tests are parametrized, and will pick up any `*.ang` and/or `*.ctf` you drop on `src/microtexture/sample_data`.
-> Results will become available for inspection on `src/microtexture/tests/.cache`.
+## Differences Between DREAM3D 6.5 and SIMPLNX Pipelines
+
+The original workflow (publication reference above) used DREAM3D 6.5.49. Already with v0.3 we had to make minor tweaks to use the available Linux binary 6.5.171 (see [change log](#change-log)).
+
+The transition to `nxrunner` with v0.5 requried a complete rewrite of the 
+The reference pipeline uses DREAM3D 6.5.171 and its `PipelineRunner`. The SIMPLNX (`nxrunner`) port introduces differences that require workarounds:
+
+The backend (DREAM3D-6.5 `PipelineRunner` vs SIMPLNX `nxrunner`) is auto-detected from the executable name passed to `--pipeline-runner`. 
+If you still need DREAM3D 6.5 `PipelineRunner`, use `--pipeline-runner /path/to/PipelineRunner`.
+
+> [!IMPORTANT]
+> Subsections below are a curated summary of [Big Pickle](https://opencode.ai/docs/zen/)'s excuses to why the NX pipelines don't produce exactly the same results
+> as the reference version. You might want to take them with a pinch of salt.
 
 
-#### Local Installation
+#### CrystalStructures conversion to Hexagonal
 
-Requires Dream3D (version 6.5) and a python environment manager, e.g. [`uv`](https://uv.dev/):
+The original DREAM3D 6.5 `CAxisSegmentFeatures` filter accepts any crystal structure. Its SIMPLNX replacement (`nx::core::CAxisSegmentFeaturesFilter`) was consolidated to only allow Hexagonal (HCP) phases — if any phase in the data is not Hexagonal, the filter fails with error -8363.
 
-```sh
-export DREAM3D_PIPELINE_RUNNER=/path/to/Dream3D/PipelineRunner
-uv sync
-uv run python -m microtexture -h
-```
+The workaround (applied in both CTF and ANG pipeline templates):
+1. **Backup** the original `CrystalStructures` array
+2. **Replace** it with a new all-zeros array (all Hexagonal)
+3. **Run** C-Axis segmentation (now succeeds)
+4. **Restore** the original crystal structures
 
-To run tests:
-```sh
-uv run --dev pytest
-```
+Without this step, multi-phase EBSD files (e.g. Ti64 with both HCP-α and BCC-β phases) crash the pipeline.
 
-> [!NOTE]
-> Regression tests will still need Docker to generate the reference results, and will be skipped if Docker is not available.
+#### Parameter compatibility
+
+Some filter parameters changed between DREAM3D-6.5 and SIMPLNX:
+- `ReadCtfData`: requires `"DegreesToRadians": 0` to match the DREAM3D 6.5 behavior (angles were already in radians in CTF files)
+- `ReadAngData`: the NX port introduces a `ConvertToRadians` flag (default `true`) that must be explicitly set to match expectations
+- Array creation filters use `create_attribute_array_path` / `output_array_path` keys instead of the older naming conventions
+- Tuple dimension flags (`set_tuple_dimensions`) must be set correctly to inherit dimensions from the parent attribute matrix
+
+#### Numerical differences
+
+Despite the workarounds, SIMPLNX does not produce bit-identical results to the reference DREAM3D-6.5 pipeline. Two sources of differences have been identified:
+
+1. **RotateSampleRefFrameFilter interpolation** — An identity rotation (present in both pipelines) produces boundary pixels with interpolated values differing between backends.
+2. **Cleanup filter neighbor selection** — `ReplaceElementAttributesWithNeighborValues` selects different neighbor orientations for cells adjacent to high-confidence (BC ≥ threshold) pixels.
+
+The perturbed cells (typically < 0.1% of the scan) cascade through segmentation, causing a small number of features to merge or split differently. The downstream effect on per-class statistics is usually within 1.5%, but can blow up to ~20% if the clean-up thresholds are not well suited to the test data (summery metrics become
+unstable for a small number of MTRs).
+
+Matching and comparing individual MTRs seems to be more robust (differences of 0.1%–2.5% depending on the metric), given the right data, they might suffer from the same issues as the summary tests.
+
 
 ## Change Log
+
+### v0.5.0 (2026-06) -- WIP
+
+- Support for `nxrunner` as an alternative DREAM3D backend:
+    - `*_nx.j2` template translations
+    - _pixi/conda_ environment instead of _docker + uv_
+    - changes to `postprocess.py` to support modified `*.dream3d` structure.
+- Centroids added to `Raw_Data.csv` (to help in tracking individual features through backends)
+- Regression tests include per-feature matching via 3D centroid+area nearest-neighbor, with P99-based column tolerances
 
 ### v0.4.0 (2026-06)
 

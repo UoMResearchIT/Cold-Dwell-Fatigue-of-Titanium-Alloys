@@ -122,13 +122,24 @@ def analyzeData(
         return
 
     raw_data.replace([np.inf, -np.inf], np.nan, inplace=True)
-    raw_data.dropna(inplace=True)
+    keep = ~raw_data.isna().any(axis=1).values
+    raw_data = raw_data[keep].reset_index(drop=True)
+
+    # Add centroid coordinates and sort by size, for reproducible
+    # comparison between pipelines (feature IDs may differ between SIMPL and NX)
+    mtr_centroids = d3d["centroids"][d3d["mtr_indices"]][keep]
+    raw_data["X Centroid (um)"] = mtr_centroids[:, 0]
+    raw_data["Y Centroid (um)"] = mtr_centroids[:, 1]
+    raw_data.sort_values(["MTR Area, um^2", "X Centroid (um)"], ascending=False, inplace=True)
+    raw_data.reset_index(drop=True, inplace=True)
 
     raw_data_output_path = os.path.join(output_dir, "Raw_Data.csv")
     raw_data.to_csv(raw_data_output_path)
 
     # Get Groups by Scan and MTR Class
-    grps = raw_data.groupby(["Sample", "MTR Class"])
+    grps = raw_data.drop(
+        columns=["X Centroid (um)", "Y Centroid (um)"]
+    ).groupby(["Sample", "MTR Class"])
 
     # Calculate Descriptive Statistics
     stats = grps.describe()
@@ -297,30 +308,26 @@ def read_dream3d_file(d3d, ref_dir=[0, 0, 1], mtr_size=10000):
     data = h5py.File(d3d, "r")
     d = {}
     d["fname"] = os.path.basename(d3d).split(".dream3d")[0]
-    d["eulers"] = data["DataContainers/ImageDataContainer/CellFeatureData/AvgEuler"][1:]
-    d["phases"] = data["DataContainers/ImageDataContainer/CellFeatureData/Phases"][1:]
-    d["num_neighbors"] = data[
-        "DataContainers/ImageDataContainer/CellFeatureData/NumNeighbors2"
-    ][1:]
-    d["sizes"] = data[
-        "DataContainers/ImageDataContainer/CellFeatureData/EquivalentDiameters"
-    ][1:]
+
+    root = "DataContainers" if "DataContainers" in data else "DataStructure"
+    dc = f"{root}/ImageDataContainer"
+    cfd = f"{dc}/CellFeatureData"
+    cd = f"{dc}/CellData"
+
+    d["eulers"] = data[cfd + "/AvgEuler" if cfd + "/AvgEuler" in data else cfd + "/AvgEulerAngles"][1:]
+    d["phases"] = data[f"{cfd}/Phases"][1:]
+    d["num_neighbors"] = data[f"{cfd}/NumNeighbors2"][1:]
+    d["sizes"] = data[f"{cfd}/EquivalentDiameters"][1:]
     try:
-        d["neighbor_list"] = data[
-            "DataContainers/ImageDataContainer/CellFeatureData/NeighborList2"
-        ][:].tolist()
-        d["shared_surfaces"] = data[
-            "DataContainers/ImageDataContainer/CellFeatureData/SharedSurfaceAreaList2"
-        ][:].tolist()
+        d["neighbor_list"] = data[f"{cfd}/NeighborList2"][:].tolist()
+        d["shared_surfaces"] = data[f"{cfd}/SharedSurfaceAreaList2"][:].tolist()
     except:
         pass
-    d["avg_caxis"] = data["DataContainers/ImageDataContainer/CellFeatureData/AvgCAxes"][
-        1:
-    ]
-    d["mask"] = data["DataContainers/ImageDataContainer/CellData/Mask"][0, :, :, 0]
+    d["avg_caxis"] = data[f"{cfd}/AvgCAxes"][1:]
+    d["mask"] = data[f"{cd}/Mask"][0, :, :, 0]
 
     try:
-        d["raw_caxis"] = data["DataContainers/ImageDataContainer/CellData/Raw_CAxes"][0]
+        d["raw_caxis"] = data[f"{cd}/Raw_CAxes"][0]
         d["caxis_misalignments"] = calc_misalignment(
             d["raw_caxis"].reshape(-1, 3), ref_dir=ref_dir
         ).reshape(d["raw_caxis"].shape[:2])
@@ -328,81 +335,41 @@ def read_dream3d_file(d3d, ref_dir=[0, 0, 1], mtr_size=10000):
     except:
         pass
 
-    d["cells"] = data["/DataContainers/ImageDataContainer/CellFeatureData/NumCells"][
-        1:
-    ].ravel()
+    d["cells"] = data[f"/{cfd}/NumCells"][1:].ravel()
 
-    d["volumes"] = data["DataContainers/ImageDataContainer/CellFeatureData/Volumes"][
-        1:
-    ].ravel()
-    d["centroids"] = data[
-        "DataContainers/ImageDataContainer/CellFeatureData/Centroids"
-    ][1:]
-    d["misorientation"] = data[
-        "DataContainers/ImageDataContainer/CellFeatureData/FeatureAvgCAxisMisorientations"
-    ][1:].ravel()
-    d["grainIDs"] = data["/DataContainers/ImageDataContainer/CellData/MTRIds"][
-        0, :, :, 0
-    ]
+    volumes_key = f"{cfd}/Volumes"
+    if volumes_key not in data:
+        volumes_key = f"{cfd}/volume_map"
+    d["volumes"] = data[volumes_key][1:].ravel()
+    d["centroids"] = data[f"{cfd}/Centroids"][1:]
+    d["misorientation"] = data[f"{cfd}/FeatureAvgCAxisMisorientations"][1:].ravel()
+    d["grainIDs"] = data[f"/{cd}/MTRIds"][0, :, :, 0]
 
     # IPF Z Direction
-    d["ipf_raw_z"] = data["DataContainers/ImageDataContainer/CellData/IPF_Raw_Z"][
-        0
-    ]  # shape (1, 1000, 1001, 3)
-    d["ipf_cleaned_z"] = data[
-        "DataContainers/ImageDataContainer/CellData/IPF_Cleaned_Z"
-    ][
-        0
-    ]  # shape (1, 1000, 1001, 3)
-    d["ipf_avg_z"] = data["DataContainers/ImageDataContainer/CellData/IPF_Average_Z"][
-        0
-    ]  # shape (1, 1000, 1001, 3)
-    d["ipf_mtr_z"] = data["DataContainers/ImageDataContainer/CellData/IPF_MTR_Z"][
-        0
-    ]  # shape (1, 1000, 1001, 3)
+    d["ipf_raw_z"] = data[f"{cd}/IPF_Raw_Z"][0]
+    d["ipf_cleaned_z"] = data[f"{cd}/IPF_Cleaned_Z"][0]
+    d["ipf_avg_z"] = data[f"{cd}/IPF_Average_Z"][0]
+    d["ipf_mtr_z"] = data[f"{cd}/IPF_MTR_Z"][0]
 
     # IPF Y Direction
-    d["ipf_raw_y"] = data["DataContainers/ImageDataContainer/CellData/IPF_Raw_Y"][
-        0
-    ]  # shape (1, 1000, 1001, 3)
-    d["ipf_cleaned_y"] = data[
-        "DataContainers/ImageDataContainer/CellData/IPF_Cleaned_Y"
-    ][
-        0
-    ]  # shape (1, 1000, 1001, 3)
-    d["ipf_avg_y"] = data["DataContainers/ImageDataContainer/CellData/IPF_Average_Y"][
-        0
-    ]  # shape (1, 1000, 1001, 3)
-    d["ipf_mtr_y"] = data["DataContainers/ImageDataContainer/CellData/IPF_MTR_Y"][
-        0
-    ]  # shape (1, 1000, 1001, 3)
+    d["ipf_raw_y"] = data[f"{cd}/IPF_Raw_Y"][0]
+    d["ipf_cleaned_y"] = data[f"{cd}/IPF_Cleaned_Y"][0]
+    d["ipf_avg_y"] = data[f"{cd}/IPF_Average_Y"][0]
+    d["ipf_mtr_y"] = data[f"{cd}/IPF_MTR_Y"][0]
 
     # IPF X Direction
-    d["ipf_raw_x"] = data["DataContainers/ImageDataContainer/CellData/IPF_Raw_X"][
-        0
-    ]  # shape (1, 1000, 1001, 3)
-    d["ipf_cleaned_x"] = data[
-        "DataContainers/ImageDataContainer/CellData/IPF_Cleaned_X"
-    ][
-        0
-    ]  # shape (1, 1000, 1001, 3)
-    d["ipf_avg_x"] = data["DataContainers/ImageDataContainer/CellData/IPF_Average_X"][
-        0
-    ]  # shape (1, 1000, 1001, 3)
-    d["ipf_mtr_x"] = data["DataContainers/ImageDataContainer/CellData/IPF_MTR_X"][
-        0
-    ]  # shape (1, 1000, 1001, 3)
+    d["ipf_raw_x"] = data[f"{cd}/IPF_Raw_X"][0]
+    d["ipf_cleaned_x"] = data[f"{cd}/IPF_Cleaned_X"][0]
+    d["ipf_avg_x"] = data[f"{cd}/IPF_Average_X"][0]
+    d["ipf_mtr_x"] = data[f"{cd}/IPF_MTR_X"][0]
 
-    d["raw_eulers"] = data["DataContainers/ImageDataContainer/CellData/EulerAngles"][
-        0
-    ]  # shape (1, 1000, 1001, 3)
-    d["avg_eulers"] = data["DataContainers/ImageDataContainer/CellData/AvgEulerAngles"][
-        0
-    ]  # shape (1, 1000, 1001, 3)
+    d["raw_eulers"] = data[f"{cd}/EulerAngles"][0]
+    d["avg_eulers"] = data[f"{cd}/AvgEulerAngles"][0]
     d["twist_angles"] = np.abs(d["eulers"][:, -1] * 180 / np.pi) % 30
 
     ind = np.where(d["volumes"] >= mtr_size)[0]
     d["Number_MTRS"] = len(ind)
+    d["mtr_indices"] = ind
     d["mtr_sizes"] = d["volumes"][ind]
     d["mtr_circle_diameters_um"] = np.sqrt(
         4 * d["mtr_sizes"] / np.pi
@@ -451,8 +418,17 @@ def read_dream3d_file(d3d, ref_dir=[0, 0, 1], mtr_size=10000):
     mtr_ipf = d["ipf_cleaned_z"].copy()
     mtr_ipf[~mtr_mask] = 0
     d["mtr_ipf"] = mtr_ipf
-    d["stepsize"] = np.sqrt(np.mean(d["volumes"] / d["cells"]))
-
+    stepsize = np.sqrt(np.mean(d["volumes"] / d["cells"]))
+    if not np.isfinite(stepsize):
+        try:
+            x_pos = data[f"{cd}/X Position"][0, :, :, 0]
+            y_pos = data[f"{cd}/Y Position"][0, :, :, 0]
+            dx = np.abs(np.diff(x_pos[0, :2])).mean()
+            dy = np.abs(np.diff(y_pos[:2, 0])).mean()
+            stepsize = np.mean([dx, dy])
+        except Exception:
+            stepsize = 1.0
+    d["stepsize"] = stepsize
     ind = np.sum(d["ipf_cleaned_z"], axis=2) > 0
     scan_area_pct = np.sum(ind.astype("uint8")) / (float(ind.shape[0]) * ind.shape[1])
     dim1, dim2 = (

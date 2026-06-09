@@ -5,6 +5,7 @@ Command-line interface replacement for the old Tk GUI.
 
 import os
 import sys
+import shutil
 from glob import glob
 import json
 import subprocess
@@ -24,8 +25,8 @@ def main(args: Namespace = None):
 
     render_template(args.pipeline_template, vars(args), args.json_path)
 
-    if not args.no_runner and args.pipeline_runner:
-        run_pipeline(args.json_path, runner_path=args.pipeline_runner, verbose=args.verbose)
+    if not args.no_runner:
+        run_pipeline(args.backend, args.json_path, runner_path=args.pipeline_runner, verbose=args.verbose)
 
     if not args.no_analysis:
 
@@ -57,29 +58,33 @@ def render_template(template_name: str, context: dict, json_path: str) -> dict:
     with open(json_path, "w", encoding="utf8") as f:
         json.dump(j, f, indent=4)
 
-    print(f"Generated JSON input file: {json_path}")
+    print(f"Generated pipeline file: {json_path}")
 
 
-def run_pipeline(json_path: str, runner_path: str, verbose: bool = False):
-    """Run the DREAM3D PipelineRunner with the given JSON input file"""
+def run_pipeline(backend: str, json_path: str, runner_path: str, verbose: bool = False):
+    """Run the DREAM3D PipelineRunner/nxrunner with the given JSON input file"""
 
     if not os.path.isfile(runner_path):
-        raise FileNotFoundError(f"PipelineRunner not found or invalid: {runner_path}")
+        raise FileNotFoundError(f"DREAM3D runner not found or invalid: {runner_path}")
     if not os.path.isfile(json_path):
         raise FileNotFoundError(f"JSON input file not found or invalid: {json_path}")
 
-    cmd = [runner_path, "-p", json_path]
+    cmd = {
+        "PipelineRunner": [runner_path, "-p", json_path],
+        "nxrunner": [runner_path, "--execute", json_path]
+    }[backend]
     status = subprocess.run(cmd, capture_output=not verbose)
 
+    runner = os.path.basename(runner_path) or "DREAM3D runner"
     if status.returncode == 0:
-        print(f"PipelineRunner executed successfully for: {json_path}")
+        print(f"{runner} executed successfully for: {json_path}")
     else:
         if not verbose:
-            print("PipelineRunner STDOUT:")
+            print(f"{runner} STDOUT:")
             print(status.stdout)
-            print("PipelineRunner STDERR:")
+            print(f"{runner} STDERR:")
             print(status.stderr)
-        raise RuntimeError(f"PipelineRunner failed for: {json_path}")
+        raise RuntimeError(f"{runner} failed for: {json_path}")
 
 
 def parse_args(arg_list: list[str] = None) -> Namespace:
@@ -224,7 +229,7 @@ def parse_args(arg_list: list[str] = None) -> Namespace:
     d3d.add_argument(
         "--pipeline-runner",
         default=os.getenv("DREAM3D_PIPELINE_RUNNER", cfg["pipeline-runner"]),
-        help="Path to DREAM3D PipelineRunner [%(default)s]. "
+        help="Path to DREAM3D PipelineRunner or DREAM3D-NX nxrunner [%(default)s]. "
         "Override default by setting DREAM3D_PIPELINE_RUNNER.",
     )
 
@@ -247,16 +252,6 @@ def parse_args(arg_list: list[str] = None) -> Namespace:
     if ext not in ["ang", "ctf"]:
         raise ValueError(f"Input file must be .ang or .ctf; got .{ext}.")
 
-    args.pipeline_template = args.pipeline_template.format(
-        EXT=ext.upper(),
-        ext=ext.lower(),
-        microtexture=files("microtexture"),
-    )
-    if not os.path.isfile(args.pipeline_template):
-        raise FileNotFoundError(
-            f"Template file {args.pipeline_template} does not exist."
-        )
-
     basename = os.path.basename(args.input_file).rsplit(".", 1)[0]
     args.basename = basename
 
@@ -275,16 +270,40 @@ def parse_args(arg_list: list[str] = None) -> Namespace:
             "Use --overwrite or remove existing files."
         )
 
-    args.json_path = os.path.join(args.output_dir, basename + ".json")
+    runner = shutil.which(args.pipeline_runner) or ""
+    backend = os.path.basename(runner)
+    if not args.dry_run and not args.no_runner:
+        if not runner:
+            raise FileNotFoundError(
+                f"DREAM3D/SIMPLNX pipeline-runner ({args.pipeline_runner}) not found"
+            )
+        if backend not in ["nxrunner", "PipelineRunner"]:
+            raise ValueError(
+                f"Unrecognized backend, expecting 'nxrunner' of 'PipelineRunner', got {backend}"
+            )
 
-    if args.verbose or args.dry_run:
-        print("Parsed Inputs:")
-        [print(f"\t{k}: {v}") for k, v in vars(args).items()]
+    args.pipeline_runner = runner
+    args.backend = backend
+
+    args.json_path = os.path.join(
+        args.output_dir, basename + (".d3dpipeline" if backend == "nxrunner" else ".json")
+    )
+
+    args.pipeline_template = args.pipeline_template.format(
+        EXT=ext.upper(),
+        ext=ext.lower(),
+        microtexture=files("microtexture"),
+        suffix = "nx" if backend == "nxrunner" else "v65",
+    )
 
     if not args.dry_run and not args.no_runner and not os.path.isfile(args.pipeline_runner):
         raise FileNotFoundError(
-            f"DREAM3D PipelineRunner not found at: {args.pipeline_runner}"
+            f"Template file {args.pipeline_template} does not exist."
         )
+    
+    if args.verbose or args.dry_run:
+        print("Parsed Inputs:")
+        [print(f"\t{k}: {v}") for k, v in vars(args).items()]
 
     return args
 

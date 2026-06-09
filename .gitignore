@@ -15,6 +15,7 @@ uv.lock
 .vscode/
 .venv/
 build/
+pixi.lock
 
 *.egg-info/
 

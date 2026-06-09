@@ -1,27 +1,29 @@
 # Packs a copy of the project with all its dependencies (including Dream3D)
 # Entrypoint is set to the CLI, use docker-compose.yaml for the GUI
 # Usage:
-#   docker buildx build . -t microtexture:latest
-#   docker run --rm microtexture:latest --help
-#   docker run --rm -v ./my/data:/data microtexture:latest [...] FILE
+#   docker buildx build . -t microtexture:simplnx
+#   docker run --rm microtexture:simplnx --help
+#   docker run --rm -v ./my/data:/data microtexture:simplnx [...] FILE
+
+FROM ghcr.io/prefix-dev/pixi:0.40.0 AS build
+
+COPY . /opt/microtexture
+WORKDIR /opt/microtexture
+RUN pixi install && pixi run setup-plugins
+
+# Create a shell-hook script to activate the environment
+# and run the command passed to the container
+RUN pixi shell-hook > /shell-hook.sh
+RUN echo 'exec "$@"' >> /shell-hook.sh
 
 FROM ghcr.io/uomresearchit/dream3d:6.5.171 AS base
 
-# "Install" this project ----
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-ENV HOME=/tmp
-ENV UV_CACHE=/tmp/uv_cache
-
+COPY --from=build /opt/microtexture/.pixi/envs /opt/microtexture/.pixi/envs
+COPY --from=build /shell-hook.sh /shell-hook.sh
 WORKDIR /opt/microtexture
-COPY . .
 
-RUN uv sync
-ENV PATH="/opt/microtexture/.venv/bin:${PATH}"
-RUN mkdir -p /tmp/.cache/matplotlib && chmod a+rw /tmp/.cache/matplotlib
-
-ENV DREAM3D_VERSION="6.5.171"
-ENV DREAM3D_PIPELINE_RUNNER="/opt/dream3d/bin/PipelineRunner"
-ENV DREAM3D_PIPELINE_TEMPLATE="{microtexture}/templates/PW_{EXT}_routine_v65.j2"
+# ENV HOME=/tmp
+# RUN mkdir -p /tmp/.cache/matplotlib && chmod a+rw /tmp/.cache/matplotlib
 
 RUN useradd -m microtexture
 RUN mkdir /data
@@ -31,25 +33,12 @@ VOLUME /data
 USER microtexture
 WORKDIR /data
 
-ENTRYPOINT ["python", "-m", "microtexture"]
-
-FROM base AS gui
-USER root
-WORKDIR /opt/microtexture
-
-RUN apt-get update && apt-get install -y \
-    python3-tk \
-    && rm -rf /var/lib/apt/lists/*
-RUN uv sync --extra gui
-
-USER microtexture
-WORKDIR /data
-
-CMD ["gui"]
+ENTRYPOINT ["/bin/bash", "/shell-hook.sh", "microtexture"]
 
 FROM base AS test
 USER root
 RUN apt-get update && apt-get install -y docker.io && rm -rf /var/lib/apt/lists/*
 
 FROM base AS final
+
 CMD ["-h"]

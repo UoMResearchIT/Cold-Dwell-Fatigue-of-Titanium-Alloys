@@ -13,14 +13,28 @@ from importlib.resources import files
 import pandas as pd
 import pytest
 
+if not shutil.which("docker"):
+    pytest.skip("Regression tests require docker!", allow_module_level=True)
 
 CACHE_DIR = files("microtexture") / "tests/.cache"
-
-ARGS = {"stress_axis": "100", "min_mtr_size": 10001}
+REUSE_REF = True
 TOLERANCE = {"relative": 1e-4, "absolute": 1e-6}
 
 _SAMPLE_DATA = files("microtexture") / "sample_data"
 _TEST_FILES = sorted(_SAMPLE_DATA.glob("*.ctf")) + sorted(_SAMPLE_DATA.glob("*.ang"))
+
+ARGS = {
+    "ci_mask_threshold": 0.05,
+    "iq_mask_threshold": 20000.0,
+    "ci_primary_threshold": 0.05,
+    "ci_secondary_threshold": 0.1,
+    "error_mask_threshold": 1,
+    "bc_primary_threshold": 30,
+    "bc_secondary_threshold": 50,
+    "caxis_misalignment": 20.0,
+    "min_mtr_size": 5000,
+    "stress_axis": "001",
+}
 
 _EXPECTED_FILES = [
     "{stem}.dream3d",
@@ -45,6 +59,7 @@ _ANALYSIS_FILES = [
     "Individual_MTRs.png",
     "Microtexture_Statistics_Summary.xlsx",
     "Microtexture_Statistics_Summary.md",
+    "Microtexture_Statistics_Summary.json",
 ]
 for axis in ["X", "Y", "Z"]:
     _ANALYSIS_FILES.extend(
@@ -67,88 +82,83 @@ def expected_files(stem, ref_dir=None):
 
     opt = [f.format(stem=stem) for f in _OPTIONAL_FILES]
     for f in opt:
-        if (ref_dir / stem / f).is_file():
+        if (ref_dir / f).is_file():
             files.append(f)
 
     return files
 
 
-@pytest.fixture(scope="session")
-def reference_results():
+def cli_args(args):
+    d = {"--" + k.replace("_", "-"): str(v) for k, v in args.items()}
+    return [x for i in d.items() for x in i]
 
-    results_dir = CACHE_DIR / "reference"
+
+@pytest.fixture(params=_TEST_FILES, ids=lambda p: p.stem, scope="session")
+def test_file(request):
+    yield request.param
+
+
+@pytest.fixture(scope="session")
+def reference_results(test_file):
+
+    key = test_file.stem
+    results_dir = CACHE_DIR / "reference" / key
+    if results_dir.is_dir() and not REUSE_REF:
+        shutil.rmtree(results_dir)
     os.makedirs(results_dir, exist_ok=True)
 
-    for file in _TEST_FILES:
-        key = file.stem
-        os.makedirs(results_dir / key, exist_ok=True)
-
-        if not os.path.isfile(results_dir / f"{key}/{key}.dream3d"):
-            # fmt: off
-            subprocess.run(
-                [
-                    "docker", "run", "--rm",
-                    "-v", f"{file.parent}:/data",
-                    "-v", f"{results_dir / key}:/results",
-                    "--user", f"{os.getuid()}:{os.getgid()}",
-                    "ghcr.io/uomresearchit/cold-dwell-fatigue-of-titanium-alloys:v0.3.0-cli",
-                    "-o", "/results",
-                    "--stress-axis", ARGS["stress_axis"],
-                    "--min-mtr-size", str(ARGS["min_mtr_size"]),
-                    f"/data/{file.name}",
-                ],
-                check=True,
-            )
-            # fmt: on
-
-            # Move post-processing results to analysis subfolder
-            for f in _ANALYSIS_FILES:
-                if os.path.isfile(results_dir / key / f):
-                    d = (results_dir / key / "analysis" / f).parent
-                    os.makedirs(d, exist_ok=True)
-                    shutil.move(
-                        results_dir / key / f, results_dir / key / "analysis" / f
-                    )
-                    if not os.listdir(d):
-                        shutil.rmtree(d)
-
-            for d in os.listdir(results_dir):
-                if os.path.isdir(d) and not os.listdir(d):
-                    shutil.rmtree(d)
+    if not os.path.isfile(results_dir / f"{key}.dream3d"):
+        # fmt: off
+        subprocess.run(
+            [
+                "docker", "run", "--rm",
+                "-v", f"{test_file.parent}:/data",
+                "-v", f"{results_dir }:/results",
+                "--user", f"{os.getuid()}:{os.getgid()}",
+                "ghcr.io/uomresearchit/cold-dwell-fatigue-of-titanium-alloys:v0.3.0-cli",
+            ] +
+            cli_args(ARGS) +
+            [
+                "-o", "/results",
+                "-v",
+                f"/data/{test_file.name}",
+            ],
+            check=True,
+        )
+        # fmt: on
 
     yield results_dir
 
 
-@pytest.mark.parametrize("test_file", _TEST_FILES, ids=lambda p: p.stem)
-def test_reference_available(reference_results, test_file):
+def test_reference_available(reference_results):
     """Check that the expected results files have been generated"""
 
-    stem = test_file.stem
-    for relpath in expected_files(stem):
-        path = reference_results / stem / relpath
+    for relpath in expected_files(reference_results.name):
+        path = reference_results / relpath
         assert path.is_file(), f"Expected file not found: {path}"
         assert os.path.getsize(path) > 0, f"File is empty: {path}"
 
 
-@pytest.fixture(params=_TEST_FILES, ids=lambda p: p.stem, scope="module")
-def current_results(request):
+@pytest.fixture(scope="session")
+def current_results(test_file):
 
     from microtexture.cli import parse_args, main
 
-    test_file = request.param
     results_dir = CACHE_DIR / "results" / test_file.stem
     if results_dir.is_dir():
         shutil.rmtree(results_dir)
     os.makedirs(results_dir, exist_ok=True)
 
     # fmt: off
-    args = parse_args([
-        "-o", str(results_dir),
-        "--stress-axis", ARGS["stress_axis"],
-        "--min-mtr-size", str(ARGS["min_mtr_size"]),
-        "--no-analysis",
-        str(test_file),
-    ])
+    args = parse_args(
+        cli_args(ARGS) +
+        [
+            "-o", str(results_dir),
+            "--no-analysis",
+            "-v",
+            str(test_file),
+        ]
+    )
     # fmt: on
 
     main(args)
@@ -165,17 +175,16 @@ def test_current(reference_results, current_results):
         assert os.path.getsize(path) > 0, f"File is empty: {path}"
 
 
-def test_analysis(reference_results, current_results):
+def run_analysis(results, analysis_dir):
 
     from microtexture.postprocess import analyzeData
 
-    stem = current_results.name
-    analysis_dir = current_results / "analysis"
+    stem = results.name
     if analysis_dir.is_dir():
         shutil.rmtree(analysis_dir)
     os.makedirs(analysis_dir, exist_ok=True)
 
-    dream3d_file = current_results / f"{stem}.dream3d"
+    dream3d_file = results / f"{stem}.dream3d"
     analyzeData(
         dream3d_file=dream3d_file,
         output_dir=analysis_dir,
@@ -189,11 +198,31 @@ def test_analysis(reference_results, current_results):
         assert path.is_file(), f"Expected file not found: {path}"
         assert os.path.getsize(path) > 0, f"File is empty: {path}"
 
-    summary_file = analysis_dir / "Microtexture_Statistics_Summary.md"
-    ref_summary = (
-        reference_results / f"{stem}/analysis/Microtexture_Statistics_Summary.md"
-    )
-    compare_summaries(ref_summary, summary_file)
+
+@pytest.fixture(scope="module")
+def redone_analysis(reference_results):
+    """Current post-processing code run on reference results"""
+
+    analysis_dir = reference_results / "analysis"
+    run_analysis(reference_results, analysis_dir)
+    yield analysis_dir
+
+
+@pytest.fixture(scope="module")
+def new_analysis(current_results):
+    """Current post-processing code run on current results"""
+
+    analysis_dir = current_results / "analysis"
+    run_analysis(current_results, analysis_dir)
+    yield analysis_dir
+
+
+def test_redo_reference_analysis(reference_results, redone_analysis):
+    compare_summaries(reference_results, redone_analysis)
+
+
+def test_current_summaries(reference_results, new_analysis):
+    compare_summaries(reference_results, new_analysis)
 
 
 def read_summary(summary_file):
@@ -232,10 +261,10 @@ def read_summary(summary_file):
     return tables
 
 
-def compare_summaries(reference_summary, generated_summary):
+def compare_summaries(reference_analysis, new_analysis):
 
-    ref_tables = read_summary(reference_summary)
-    gen_tables = read_summary(generated_summary)
+    ref_tables = read_summary(reference_analysis / "Microtexture_Statistics_Summary.md")
+    gen_tables = read_summary(new_analysis / "Microtexture_Statistics_Summary.md")
 
     for key in ref_tables.keys():
         assert key in gen_tables, f"Missing table: {key}"

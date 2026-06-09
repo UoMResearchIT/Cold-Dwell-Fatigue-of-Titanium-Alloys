@@ -4,6 +4,7 @@ Command-line interface replacement for the old Tk GUI.
 """
 
 import os
+import sys
 from glob import glob
 import json
 import subprocess
@@ -13,8 +14,10 @@ from configargparse import Namespace, ArgumentParser, YAMLConfigFileParser
 from jinja2 import Environment, FileSystemLoader
 
 
-def main():
-    args = parse_args()
+def main(args: Namespace = None):
+
+    if args is None:
+        args = parse_args()
     if args.dry_run:
         print("Dry run: Exiting before JSON generation or pipeline execution.")
         return
@@ -79,7 +82,7 @@ def run_pipeline(json_path: str, runner_path: str, verbose: bool = False):
         raise RuntimeError(f"PipelineRunner failed for: {json_path}")
 
 
-def parse_args() -> Namespace:
+def parse_args(arg_list: list[str] = None) -> Namespace:
 
     def_config_file = os.path.join(
         os.path.dirname(os.path.realpath(__file__)), "defaults.yaml"
@@ -88,6 +91,7 @@ def parse_args() -> Namespace:
         cfg = YAMLConfigFileParser().parse(f)
 
     p = ArgumentParser(
+        prog="microtexture",
         description="CLI for executing Dream3D pipeline templates",
         config_file_parser_class=YAMLConfigFileParser,
         default_config_files=["./.microtexture", "~/.microtexture"],
@@ -224,7 +228,7 @@ def parse_args() -> Namespace:
         "Override default by setting DREAM3D_PIPELINE_RUNNER.",
     )
 
-    args = p.parse_args()
+    args = p.parse_args(arg_list or sys.argv[1:])
 
     args.input_file = os.path.expanduser(os.path.expandvars(args.input_file))
     if not os.path.isfile(args.input_file):
@@ -273,14 +277,14 @@ def parse_args() -> Namespace:
 
     args.json_path = os.path.join(args.output_dir, basename + ".json")
 
+    if args.verbose or args.dry_run:
+        print("Parsed Inputs:")
+        [print(f"\t{k}: {v}") for k, v in vars(args).items()]
+
     if not args.dry_run and not args.no_runner and not os.path.isfile(args.pipeline_runner):
         raise FileNotFoundError(
             f"DREAM3D PipelineRunner not found at: {args.pipeline_runner}"
         )
-
-    if args.verbose or args.dry_run:
-        print("Parsed Inputs:")
-        [print(f"\t{k}: {v}") for k, v in vars(args).items()]
 
     return args
 

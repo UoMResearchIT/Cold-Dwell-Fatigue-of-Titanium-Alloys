@@ -6,6 +6,9 @@
 This is an unofficial "fork" of the package cited below, modified for headless execution on a Docker (Linux) environment.
 See [Change Log](#change-log) for details about the current status and important modifications.
 
+> [!CAUTION]
+> This branch is a stripped-down version intended for command-line execution **only**. Use the `legacy` branch to access the original GUI-based implementation.
+
 
 #### LICENSE: (?) Ask the original authors.
 
@@ -43,22 +46,11 @@ cd ./microtexture
 
 #### Using [Docker](https://docs.docker.com/engine/install/) (recommended)
 
-To run the `microtexture` GUI:
-```sh
-# TEST_DATA will be mounted to /data in the container
-export TEST_DATA=/path/to/my/data
-docker compose up --build
-```
-
-To run headless (command line):
 ```sh
 docker buildx build . -t microtexture:latest
 docker run --rm microtexture:latest --help
 docker run --rm -v /path/to/my/data:/data microtexture:latest [OPTIONS] FILE
 ```
-
-> [!TIP]
-> If you only need the command line interface, consider using the `cli` branch of this repository, which has been streamlined for this purpose.
 
 To run the DREAM3D GUI (e.g. for development of new pipelines):
 ```sh
@@ -74,12 +66,6 @@ export DREAM3D_PIPELINE_RUNNER=/path/to/Dream3D/PipelineRunner
 uv sync
 uv run python -m microtexture -h
 ```
-
-To run the GUI:
-```sh
-uv run python -m microtexture gui
-```
-
 
 ## Change Log
 
@@ -107,12 +93,11 @@ uv run python -m microtexture gui
     - (Missing!) support for multiple files
     - Post-processing (analysis) logic separated from GUI
 
+### v0.2.1-cli
+- Command line interface only (no GUI)
+
 ### TODO
 
 - Support for multiple files in command line interface
-- Single configuration file for both GUI and CLI
-- Rewrite GUI as an interface to the command line tool
-    - Use Jinja2 templates for GUI as well
-    - Use the `postprocess` module
-- The GUI could do with some linting and refactoring for readability
 - Unit tests
+

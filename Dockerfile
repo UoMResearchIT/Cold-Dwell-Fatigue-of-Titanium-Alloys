@@ -47,5 +47,9 @@ WORKDIR /data
 
 CMD ["gui"]
 
+FROM base AS test
+USER root
+RUN apt-get update && apt-get install -y docker.io && rm -rf /var/lib/apt/lists/*
+
 FROM base AS final
 CMD ["-h"]

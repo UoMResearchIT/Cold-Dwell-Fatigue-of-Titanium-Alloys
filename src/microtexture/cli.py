@@ -113,10 +113,10 @@ def parse_args(arg_list: list[str] = None) -> Namespace:
     p.add_argument(
         "--summary-format",
         choices=["excel", "markdown", "json"],
-        action="append",
         nargs="*",
         default=cfg["summary-format"],
-        help="Format for summary output file ['%(default)s']",
+        help="Format(s) for summary output file ['%(default)s']. "
+             "Use -- to mark end of argument, e.g. --summary-format json excel -- input_file",
     )
     p.add_argument(
         "-n",

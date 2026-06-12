@@ -43,7 +43,9 @@ def test_parse_default_config_yaml(dummy_input_file):
     defaults_yaml = str(files("microtexture") / "defaults.yaml")
 
     with patch("sys.argv", ["cli.py", dummy_input_file, "--config", defaults_yaml, "--no-runner"]):
-        parse_args()
+        args = parse_args()
+
+    assert args.summary_format == ["excel", "markdown"]
 
 
 def test_parse_test_config_yaml(dummy_config_yaml, dummy_input_file):
@@ -55,6 +57,7 @@ def test_parse_test_config_yaml(dummy_config_yaml, dummy_input_file):
         assert args.input_file == os.path.abspath(dummy_input_file)
         assert args.extension == "ctf"
         assert args.basename == "test"
+        assert args.summary_format == ["json"]
 
 
 def test_parse_args_invalid_extension(temp_dir):

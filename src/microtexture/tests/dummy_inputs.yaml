@@ -1,6 +1,8 @@
 # Test config file
 
 output-dir: "/tmp/test_results/{basename}"
+summary-format: "json"
+
 caxis-misalignment: 21
 min-mtr-size: 10001
 stress-axis: '100'

@@ -1,0 +1,13 @@
+services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    volumes:
+      - ./src/microtexture:/opt/microtexture/src/microtexture
+      - /var/run/docker.sock:/var/run/docker.sock
+    user: root
+    working_dir: /opt/microtexture
+    entrypoint: ""
+    command: ["uv", "run", "--dev", "python", "-m", "pytest", "-v"]

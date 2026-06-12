@@ -1,5 +1,5 @@
 [project]
-version = "0.3.0"
+version = "0.4.0"
 name = "microtexture"
 description = "Microtexture analysis and Dream3D pipeline automation"
 requires-python = ">=3.12"
@@ -28,5 +28,21 @@ gui = [
 
 [tool.uv]
 package = true
+
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "pytest-cov>=6.2.0",
+]
+
+[tool.setuptools.package-data]
+microtexture = ["sample_data/*.ang"]
+
+[project.scripts]
+microtexture = "microtexture.cli:main"
 
 # System dependencies: DREAM3D-6.5.171 must be installed (see Dockerfile)

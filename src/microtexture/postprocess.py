@@ -4,6 +4,7 @@ Generates summary plots and statistics after running a Dream3D pipeline
 (Stand-alone version of forms.analyzeData + required utils)
 """
 
+import json
 import sys
 import os
 from typing import Literal
@@ -27,6 +28,7 @@ def analyzeData(
     output_dir: str = None,
     stress_axis: Literal["100", "010", "001"] = "001",
     min_mtr_size: int = 10000,
+    summary_format: list[Literal["excel", "markdown", "json"]] = ["excel"],
 ):
 
     if not dream3d_file or not os.path.isfile(dream3d_file):
@@ -156,12 +158,16 @@ def analyzeData(
         index=[d3d["fname"]],
     )
 
-    # Save Summary Statistics to Results Folder
-    output_path = os.path.join(output_dir, "Microtexture_Statistics_Summary.xlsx")
-    stats2excel(output_path, stats, stats2, scan_areas)
+    # Save Summary Statistics in the requested format(s)
+    for fmt in summary_format:
+        [ext, save_func] = {
+            "excel": ["xlsx", stats2excel],
+            "markdown": ["md", stats2markdown],
+            "json": ["json", stats2json],
+        }.get(fmt)
 
-    md_path = os.path.join(output_dir, "Microtexture_Statistics_Summary.md")
-    stats2markdown(md_path, stats, stats2, scan_areas)
+        output_path = os.path.join(output_dir, f"Microtexture_Statistics_Summary.{ext}")
+        save_func(output_path, stats, stats2, scan_areas)
 
     print("Program has completed successfully")
 
@@ -214,6 +220,35 @@ def stats2markdown(output_path, stats, stats2, scan_areas):
 
     with open(output_path, "w") as f:
         f.write("\n".join(content))
+
+
+def stats2json(output_path, stats: DataFrame, stats2: DataFrame, scan_areas: DataFrame):
+    """
+    A machine-friendly JSON version of the summary file
+    """
+
+    sample_name = stats.index.get_level_values(0).unique().tolist()
+    assert len(sample_name) == 1
+
+    _stats = stats.droplevel(0)
+    _stats = _stats.drop(columns="number_of_mtrs", level=1, errors="ignore")
+
+    output_dict = {"Sample": sample_name[0]}
+    output_dict.update(scan_areas.reset_index(drop=True).to_dict(orient="records")[0])
+    output_dict["Area Fractions"] = (
+        stats2.drop(columns=["Sample"], errors="ignore")
+        .set_index("MTR Class")
+        .to_dict(orient="index")
+    )
+    output_dict.update(
+        {
+            col: _stats[col].to_dict(orient="index")
+            for col in np.unique([n[0] for n in stats.columns])
+        }
+    )
+
+    with open(output_path, "w") as f:
+        json.dump(output_dict, f, indent=2)
 
 
 def array2rgb(arr, cmap="jet", vmin=0, vmax=1, nan_color="k"):

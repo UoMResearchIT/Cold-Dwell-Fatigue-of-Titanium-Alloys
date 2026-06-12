@@ -2,6 +2,7 @@
 
 # {basename} will be replaced by the input file name without extension
 output-dir: "./Results/{basename}"
+summary-format: ["excel", "markdown"]
 
 # C-Axis Misalignment Threshold (deg) for Pixel Segmentation:
 caxis-misalignment: 20

@@ -6,8 +6,9 @@
 This is an unofficial "fork" of the package cited below, modified for headless execution on a Docker (Linux) environment.
 See [Change Log](#change-log) for details about the current status and important modifications.
 
-> [!CAUTION]
-> This branch is a stripped-down version intended for command-line execution **only**. Use the `legacy` branch to access the original GUI-based implementation.
+> [!IMPORTANT]
+> - This is a stripped-down version of the original code, intended for command-line execution only. Use the `legacy` branch for the GUI-based implementation.
+> - DREAM.3D 6.5 is considered legacy, and no longer maintained. Consider using the (experimental) `simplnx` branch.
 
 
 #### LICENSE: (?) Ask the original authors.
@@ -57,6 +58,16 @@ To run the DREAM3D GUI (e.g. for development of new pipelines):
 docker compose -f docker-compose-dream3d-gui.yaml up --build
 ```
 
+To run tests:
+```sh
+docker compose -f docker-compose-test.yaml up
+```
+
+> [!TIP]
+> Regression tests are parametrized, and will pick up any `*.ang` and/or `*.ctf` you drop on `src/microtexture/sample_data`.
+> Results will become available for inspection on `src/microtexture/tests/.cache`.
+
+
 #### Local Installation
 
 Requires Dream3D (version 6.5) and a python environment manager, e.g. [`uv`](https://uv.dev/):
@@ -67,7 +78,21 @@ uv sync
 uv run python -m microtexture -h
 ```
 
+To run tests:
+```sh
+uv run --dev pytest
+```
+
+> [!NOTE]
+> Regression tests will still need Docker to generate the reference results, and will be skipped if Docker is not available.
+
 ## Change Log
+
+### v0.4.0 (2026-06)
+
+- JSON summary output
+- Basic regression/postprocessing tests
+- Docker image builds on ghcr.io/uomresearchit/dream3d:6.5.171 (DREAM3D 6.5.x no longer available for download)
 
 ### v0.3.0 (2026-01)
 

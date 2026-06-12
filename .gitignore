@@ -13,5 +13,9 @@ Sample_ANG_Files/
 uv.lock
 .flake8
 .vscode/
+.venv/
+build/
 
 *.egg-info/
+
+*.tar.gz

@@ -1,6 +1,10 @@
-__pycache__/
+**/__pycache__/
+**/.pytest_cache/
+**/.cache/
+**/*.ctf
 
 DREAM3D-6.5.49-Win64/
+*.tar.gz
 *.exe
 *.pptx
 *.xlsx
@@ -9,7 +13,8 @@ DREAM3D-6.5.49-Win64/
 .flake8
 .vscode/
 .venv/
+.pixi/
 
-Results/
+**/Results/
 .git/
 *.egg-info/
